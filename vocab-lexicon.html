@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Lexicon — Daily Vocabulary Log</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14171f;
+    --ink2:#1a1e28;
+    --paper:#f0e9d8;
+    --surface:#1c212b;
+    --surface-raised:#242a36;
+    --line:#333a48;
+    --gold:#e3b567;
+    --gold-dim:#a9803f;
+    --teal:#5fc3ae;
+    --coral:#ec8f6e;
+    --violet:#a996f0;
+    --rose:#e2687c;
+    --text:#ece7da;
+    --text-dim:#9aa2b0;
+    --text-faint:#616a79;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse 800px 400px at 15% -5%, rgba(227,181,103,0.08), transparent),
+      radial-gradient(ellipse 700px 500px at 100% 10%, rgba(95,195,174,0.05), transparent),
+      var(--ink);
+    color:var(--text);
+    font-family:'IBM Plex Sans',sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:40px;
+  }
+  ::selection{background:var(--gold);color:var(--ink);}
+
+  header{
+    padding:28px 20px 22px;
+    border-bottom:1px solid var(--line);
+    position:relative;
+  }
+  header::after{
+    content:'';
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:2px;
+    background:linear-gradient(90deg, var(--gold), var(--teal) 45%, var(--violet) 80%, transparent);
+    opacity:0.55;
+  }
+  .header-inner{max-width:760px;margin:0 auto;}
+  .masthead{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:6px;
+  }
+  .masthead svg{flex-shrink:0;}
+  .masthead .mark{
+    font-family:'Source Serif 4',serif;
+    font-weight:700;
+    font-size:1.8rem;
+    letter-spacing:-0.01em;
+  }
+  .masthead .mark em{
+    font-style:italic;
+    color:var(--gold);
+    font-weight:500;
+  }
+  .tagline{
+    color:var(--text-dim);
+    font-size:0.87rem;
+    line-height:1.5;
+  }
+  .stats-row{
+    display:flex;
+    gap:24px;
+    margin-top:20px;
+    flex-wrap:wrap;
+    align-items:flex-end;
+  }
+  .stat{display:flex; flex-direction:column; gap:2px;}
+  .stat .n{font-family:'Source Serif 4',serif; font-size:1.5rem; font-weight:600; color:var(--gold);}
+  .stat .l{font-size:0.72rem; color:var(--text-dim); letter-spacing:0.02em;}
+  .stat.streak .n{color:var(--coral);}
+
+  .goal-block{flex:1; min-width:160px; max-width:280px;}
+  .goal-block-head{
+    display:flex; justify-content:space-between; align-items:baseline;
+    font-size:0.72rem; color:var(--text-dim); margin-bottom:6px;
+  }
+  .goal-block-head b{color:var(--teal); font-weight:600; font-size:0.85rem;}
+  .goal-input{
+    background:transparent;
+    border:none;
+    color:var(--text-dim);
+    font-family:'IBM Plex Mono',monospace;
+    width:26px;
+    text-align:right;
+    font-size:0.75rem;
+    border-bottom:1px dotted var(--gold-dim);
+  }
+  .goal-track{
+    height:8px;
+    border-radius:6px;
+    background:var(--surface-raised);
+    border:1px solid var(--line);
+    overflow:hidden;
+  }
+  .goal-fill{
+    height:100%;
+    border-radius:6px;
+    background:linear-gradient(90deg, var(--teal), var(--gold));
+    transition:width 0.5s cubic-bezier(.4,0,.2,1);
+    width:0%;
+  }
+  .goal-fill.complete{background:linear-gradient(90deg, var(--teal), var(--gold), var(--coral));}
+
+  main{max-width:760px; margin:0 auto; padding:24px 20px 0;}
+
+  .panel{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:20px;
+    margin-bottom:22px;
+  }
+  .panel-title{
+    font-size:0.78rem;
+    color:var(--text-dim);
+    margin-bottom:12px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+
+  textarea{
+    width:100%;
+    background:var(--surface-raised);
+    border:1px solid var(--line);
+    border-radius:8px;
+    color:var(--text);
+    font-family:'IBM Plex Sans',sans-serif;
+    font-size:0.95rem;
+    padding:14px;
+    min-height:84px;
+    resize:vertical;
+    line-height:1.5;
+  }
+  textarea:focus{outline:none; border-color:var(--gold-dim);}
+  textarea::placeholder{color:var(--text-faint);}
+
+  .row{display:flex; gap:10px; margin-top:12px; align-items:center; flex-wrap:wrap;}
+
+  button{
+    font-family:'IBM Plex Sans',sans-serif;
+    font-weight:600;
+    font-size:0.9rem;
+    border-radius:7px;
+    border:1px solid transparent;
+    padding:11px 18px;
+    cursor:pointer;
+    transition:transform 0.1s ease, opacity 0.15s ease;
+  }
+  button:active{transform:scale(0.97);}
+  button:disabled{opacity:0.5; cursor:not-allowed;}
+  .btn-primary{background:var(--gold); color:#211a0c;}
+  .btn-primary:hover:not(:disabled){background:#d9b662;}
+  .btn-ghost{background:transparent; border-color:var(--line); color:var(--text-dim);}
+  .btn-ghost:hover{border-color:var(--text-dim); color:var(--text);}
+
+  .mode-select-wrap{position:relative; margin-bottom:16px;}
+  .mode-select-wrap::after{
+    content:'';
+    position:absolute; right:16px; top:50%; margin-top:-3px;
+    width:8px; height:8px;
+    border-right:2px solid var(--gold-dim);
+    border-bottom:2px solid var(--gold-dim);
+    transform:rotate(45deg);
+    pointer-events:none;
+  }
+  .mode-select{
+    width:100%;
+    appearance:none;
+    -webkit-appearance:none;
+    background:var(--surface-raised);
+    border:1px solid var(--line);
+    border-radius:8px;
+    color:var(--gold);
+    font-family:'IBM Plex Sans',sans-serif;
+    font-weight:600;
+    font-size:0.92rem;
+    padding:12px 38px 12px 14px;
+    cursor:pointer;
+  }
+  .mode-select:focus{outline:none; border-color:var(--gold-dim);}
+  .mode-panel{display:none;}
+  .mode-panel.active{display:block;}
+
+  /* compact homepage entry card (portal to full detail) */
+  .entry-compact{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:13px 16px;
+  }
+  .ec-link{
+    flex:1;
+    min-width:0;
+    text-decoration:none;
+    color:inherit;
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+    flex-wrap:nowrap;
+  }
+  .ec-link:hover .ec-word{color:var(--gold);}
+  .ec-word{
+    font-family:'Source Serif 4',serif;
+    font-size:1.08rem;
+    font-weight:600;
+    color:var(--paper);
+    flex-shrink:0;
+  }
+  .ec-meaning{
+    font-size:0.83rem;
+    color:var(--text-dim);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    min-width:0;
+  }
+  .ec-actions{display:flex; align-items:center; gap:0; flex-shrink:0;}
+  .ec-arrow{color:var(--text-faint); font-size:0.85rem; margin-left:4px;}
+
+  .manual-grid{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:10px;
+    margin-bottom:12px;
+  }
+  .manual-grid input, .manual-grid textarea{
+    width:100%;
+    background:var(--surface-raised);
+    border:1px solid var(--line);
+    border-radius:8px;
+    color:var(--text);
+    font-family:'IBM Plex Sans',sans-serif;
+    font-size:0.9rem;
+    padding:11px 13px;
+  }
+  .manual-grid input:focus, .manual-grid textarea:focus{outline:none; border-color:var(--gold-dim);}
+  .manual-grid textarea{resize:vertical; line-height:1.5;}
+
+  .key-panel{display:none;}
+  .key-panel.show{display:block;}
+  .key-panel input{
+    width:100%;
+    background:var(--surface-raised);
+    border:1px solid var(--line);
+    border-radius:8px;
+    color:var(--text);
+    padding:10px 12px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.85rem;
+  }
+  .key-note{font-size:0.78rem; color:var(--text-faint); margin-top:8px; line-height:1.5;}
+
+  .status{
+    font-size:0.85rem;
+    color:var(--text-dim);
+    padding:10px 0 0;
+    display:none;
+  }
+  .status.show{display:block;}
+  .status.err{color:var(--rose);}
+
+  .tabs{display:flex; gap:4px; margin-bottom:16px; border-bottom:1px solid var(--line);}
+  .tab{
+    padding:9px 14px;
+    font-size:0.85rem;
+    color:var(--text-dim);
+    cursor:pointer;
+    border-bottom:2px solid transparent;
+    margin-bottom:-1px;
+  }
+  .tab.active{color:var(--gold); border-bottom-color:var(--gold);}
+
+  .view{display:none;}
+  .view.active{display:block;}
+
+  /* word entry cards */
+  @keyframes cardIn{
+    from{opacity:0; transform:translateY(10px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  .entry{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-left:3px solid var(--line);
+    border-radius:10px;
+    margin-bottom:16px;
+    overflow:hidden;
+    transition:border-color 0.2s ease;
+  }
+  .entry.pos-noun{border-left-color:var(--gold);}
+  .entry.pos-verb{border-left-color:var(--coral);}
+  .entry.pos-adjective{border-left-color:var(--teal);}
+  .entry.pos-adverb{border-left-color:var(--violet);}
+  .entry.reveal{animation:cardIn 0.45s ease backwards;}
+  .entry.just-added{box-shadow:0 0 0 1px var(--gold), 0 0 18px rgba(227,181,103,0.25);}
+
+  .entry-head{
+    padding:16px 20px 14px;
+    border-bottom:1px solid var(--line);
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:12px;
+  }
+  .entry-word-block{display:flex; align-items:baseline; flex-wrap:wrap; gap:2px 10px;}
+  .entry-word{
+    font-family:'Source Serif 4',serif;
+    font-size:1.55rem;
+    font-weight:600;
+    color:var(--paper);
+  }
+  .entry-word mark{background:rgba(227,181,103,0.35); color:inherit; border-radius:3px;}
+  .entry-pron{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.78rem;
+    color:var(--text-faint);
+  }
+  .entry-pron .bn{color:var(--text-dim); margin-left:6px;}
+  .entry-pos{
+    display:inline-block;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.68rem;
+    border-radius:20px;
+    padding:2px 9px;
+    margin-left:2px;
+    vertical-align:middle;
+    letter-spacing:0.03em;
+    border:1px solid var(--line);
+    color:var(--text-dim);
+  }
+  .entry-pos.noun{color:var(--gold); border-color:rgba(227,181,103,0.4);}
+  .entry-pos.verb{color:var(--coral); border-color:rgba(236,143,110,0.4);}
+  .entry-pos.adjective{color:var(--teal); border-color:rgba(95,195,174,0.4);}
+  .entry-pos.adverb{color:var(--violet); border-color:rgba(169,150,240,0.4);}
+
+  .entry-actions{display:flex; gap:2px; flex-shrink:0;}
+  .icon-btn{
+    background:none; border:none; color:var(--text-faint);
+    padding:6px; cursor:pointer;
+    border-radius:7px;
+    display:flex; align-items:center; justify-content:center;
+    transition:background 0.15s ease, color 0.15s ease;
+  }
+  .icon-btn:hover{color:var(--text); background:var(--surface-raised);}
+  .icon-btn.mastered{color:var(--teal); background:rgba(95,195,174,0.12);}
+  .icon-btn.flagged{color:var(--rose); background:rgba(226,104,124,0.12);}
+
+  .entry-body{padding:16px 20px 20px;}
+  .field{margin-bottom:16px;}
+  .field:last-child{margin-bottom:0;}
+  .field-label{
+    font-size:0.7rem;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    color:var(--text-faint);
+    margin-bottom:6px;
+  }
+  .meaning-en{font-size:0.95rem; line-height:1.55;}
+  .meaning-bn{font-size:0.95rem; line-height:1.6; color:var(--paper); margin-top:3px;}
+
+  .chip-row{display:flex; flex-wrap:wrap; gap:7px;}
+  .chip{
+    font-size:0.82rem;
+    padding:4px 11px;
+    border-radius:20px;
+    background:var(--surface-raised);
+    border:1px solid var(--line);
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    cursor:pointer;
+    transition:background 0.15s ease, transform 0.1s ease;
+  }
+  .chip:hover{background:var(--ink2); transform:translateY(-1px);}
+  .chip.syn{color:var(--teal); border-color:rgba(77,125,114,0.4);}
+  .chip.ant{color:var(--rose); border-color:rgba(168,92,82,0.4);}
+  .chip .portal-glyph{font-size:0.7rem; opacity:0.6;}
+
+  .verb-forms{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px 22px;
+  }
+  .verb-forms .vf{display:flex; flex-direction:column; gap:2px;}
+  .verb-forms .vf-label{font-size:0.68rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-faint);}
+  .verb-forms .vf-word{font-family:'Source Serif 4',serif; font-size:1.02rem; color:var(--paper); font-weight:600;}
+  .verb-forms .vf-arrow{align-self:center; color:var(--text-faint); font-size:0.9rem;}
+  a.portal-word{text-decoration:none; border-bottom:1px dotted var(--gold-dim); cursor:pointer;}
+  a.portal-word:hover{color:var(--gold); border-bottom-color:var(--gold);}
+
+  .other-forms{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px;}
+  .other-forms li{
+    padding-left:14px;
+    border-left:2px solid var(--violet);
+  }
+  .other-forms .of-head{display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; margin-bottom:2px;}
+  .other-forms .of-word{font-family:'Source Serif 4',serif; font-size:1rem; font-weight:600; color:var(--paper);}
+  .other-forms .of-pos{font-size:0.72rem; color:var(--violet); font-family:'IBM Plex Mono',monospace;}
+  .other-forms .of-example{font-size:0.9rem; line-height:1.5; color:var(--text-dim);}
+  .other-forms .of-example b{color:var(--text); font-weight:600;}
+
+  .sentences{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:8px;}
+  .sentences li{
+    font-size:0.92rem;
+    line-height:1.55;
+    padding-left:14px;
+    border-left:2px solid var(--line);
+    color:var(--text-dim);
+  }
+  .sentences li b{color:var(--text); font-weight:600;}
+
+  .paragraph{
+    font-size:0.92rem;
+    line-height:1.7;
+    color:var(--text-dim);
+    background:var(--surface-raised);
+    border-radius:8px;
+    padding:14px 16px;
+  }
+  .paragraph b{color:var(--gold); font-weight:600;}
+
+  .usage-note{
+    font-size:0.85rem;
+    line-height:1.55;
+    color:var(--text-faint);
+    font-style:italic;
+  }
+
+  .day-group{margin-bottom:26px;}
+  .day-heading{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:12px;
+    color:var(--text-dim);
+    font-size:0.85rem;
+  }
+  .day-heading .line{flex:1; height:1px; background:var(--line);}
+
+  .empty{
+    text-align:center;
+    padding:50px 20px;
+    color:var(--text-faint);
+  }
+  .empty .glyph{font-family:'Source Serif 4',serif; font-size:2.4rem; color:var(--line); margin-bottom:10px;}
+
+  .search-bar{margin-bottom:10px; position:relative;}
+  .search-bar svg{
+    position:absolute; left:14px; top:50%; transform:translateY(-50%);
+    pointer-events:none;
+  }
+  .search-bar input{
+    width:100%;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:8px;
+    color:var(--text);
+    padding:12px 14px 12px 40px;
+    font-size:0.9rem;
+  }
+  .search-bar input:focus{outline:none; border-color:var(--gold-dim);}
+  .search-meta{
+    font-size:0.78rem;
+    color:var(--text-faint);
+    margin-bottom:16px;
+    min-height:1em;
+  }
+  .search-meta b{color:var(--gold); font-weight:600;}
+
+  .skeleton{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:20px;
+    margin-bottom:16px;
+  }
+  .skeleton .bar{
+    height:12px;
+    background:var(--surface-raised);
+    border-radius:4px;
+    margin-bottom:10px;
+    animation:pulse 1.3s ease-in-out infinite;
+  }
+  @keyframes pulse{0%,100%{opacity:0.5;}50%{opacity:1;}}
+
+  footer{
+    max-width:760px;
+    margin:30px auto 0;
+    padding:16px 20px;
+    text-align:center;
+    color:var(--text-faint);
+    font-size:0.78rem;
+  }
+
+  @media (max-width:480px){
+    .masthead .mark{font-size:1.5rem;}
+    .entry-word{font-size:1.3rem;}
+  }
+
+  /* clickable word link on cards */
+  .entry-word-link{text-decoration:none; color:inherit; cursor:pointer;}
+  .entry-word-link:hover .entry-word{color:var(--gold);}
+
+  /* recently added strip on homepage */
+  .recent-strip{margin-bottom:20px;}
+  .recent-strip .panel-title{margin-bottom:10px;}
+  .recent-chip-row{display:flex; flex-wrap:wrap; gap:8px;}
+  .recent-chip{
+    display:inline-flex; align-items:baseline; gap:6px;
+    background:var(--surface-raised);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:5px 12px 5px 12px;
+    font-size:0.85rem;
+    text-decoration:none;
+    color:var(--text);
+    transition:border-color 0.15s ease, transform 0.1s ease;
+  }
+  .recent-chip:hover{border-color:var(--gold-dim); transform:translateY(-1px);}
+  .recent-chip .rc-pos{font-size:0.66rem; color:var(--text-faint); font-family:'IBM Plex Mono',monospace;}
+
+  /* letter-group headings (alphabetical sections) */
+  .letter-heading{
+    display:flex; align-items:center; gap:12px; margin-bottom:12px;
+  }
+  .letter-heading .letter-glyph{
+    font-family:'Source Serif 4',serif; font-size:1.3rem; font-weight:700;
+    color:var(--gold); width:30px; height:30px; border-radius:8px;
+    border:1px solid rgba(227,181,103,0.4); background:rgba(227,181,103,0.08);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .letter-heading .line{flex:1; height:1px; background:var(--line);}
+  .letter-heading .count{font-size:0.78rem; color:var(--text-faint);}
+
+  /* detail (single-word) and not-found "portal" pages */
+  #detailRoot, #notfoundRoot{display:none; max-width:760px; margin:0 auto; padding:24px 20px 40px;}
+  .portal-topbar{
+    display:flex; align-items:center; gap:10px; margin-bottom:22px;
+  }
+  .back-link{
+    display:inline-flex; align-items:center; gap:6px;
+    color:var(--text-dim); text-decoration:none; font-size:0.87rem;
+    padding:7px 13px 7px 10px; border:1px solid var(--line); border-radius:20px;
+    transition:border-color 0.15s ease, color 0.15s ease;
+  }
+  .back-link:hover{border-color:var(--gold-dim); color:var(--gold);}
+  .portal-brand{margin-left:auto; font-family:'Source Serif 4',serif; font-size:1.1rem; color:var(--text-faint);}
+  .portal-brand em{font-style:italic; color:var(--gold-dim);}
+  .notfound-box{
+    text-align:center; padding:60px 20px; color:var(--text-dim);
+  }
+  .notfound-box .glyph{font-family:'Source Serif 4',serif; font-size:2.6rem; color:var(--line); margin-bottom:14px;}
+  .notfound-box .term{color:var(--gold); font-weight:600; font-family:'Source Serif 4',serif; font-style:italic;}
+  .notfound-box .sub{font-size:0.87rem; color:var(--text-faint); margin-top:8px; max-width:420px; margin-left:auto; margin-right:auto; line-height:1.6;}
+</style>
+</head>
+<body>
+
+<div id="homeRoot">
+<header>
+  <div class="header-inner">
+    <div class="masthead">
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+        <path d="M4 4.5C4 3.7 4.7 3 5.5 3H13V21.5C13 21.5 10.5 20 7 20C5.8 20 4.7 20.3 4 20.7V4.5Z" fill="none" stroke="#e3b567" stroke-width="1.4" stroke-linejoin="round"/>
+        <path d="M22 4.5C22 3.7 21.3 3 20.5 3H13V21.5C13 21.5 15.5 20 19 20C20.2 20 21.3 20.3 22 20.7V4.5Z" fill="none" stroke="#5fc3ae" stroke-width="1.4" stroke-linejoin="round"/>
+      </svg>
+      <span class="mark">Lex<em>icon</em></span>
+    </div>
+    <div class="tagline">A running dictionary of every word you've studied for BCS, bank, and admission prep — meaning, synonym, antonym, pronunciation, and usage, logged day by day.</div>
+    <div class="stats-row">
+      <div class="stat"><span class="n" id="statTotal">0</span><span class="l">words logged</span></div>
+      <div class="stat streak"><span class="n" id="statStreak">0</span><span class="l">day streak</span></div>
+      <div class="goal-block">
+        <div class="goal-block-head">
+          <span>Today's goal</span>
+          <span><b id="statToday">0</b> / <input type="number" class="goal-input" id="goalInput" min="1" max="100" value="15"></span>
+        </div>
+        <div class="goal-track"><div class="goal-fill" id="goalFill"></div></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <div class="panel recent-strip">
+    <div class="panel-title"><span>Recently added</span></div>
+    <div class="recent-chip-row" id="recentStrip"></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">
+      <span>Add new word</span>
+    </div>
+    <div class="mode-select-wrap">
+      <select class="mode-select" id="modeSelect">
+        <option value="ai">Add automatically</option>
+        <option value="manual">Add manually</option>
+        <option value="paste">Add from JSON</option>
+      </select>
+    </div>
+
+    <div class="mode-panel active" id="mode-ai">
+      <textarea id="wordInput" placeholder="Type today's words — one per line or comma-separated&#10;e.g. ubiquitous, austere, candid"></textarea>
+      <div class="row">
+        <button class="btn-primary" id="generateBtn">Generate entries</button>
+        <button class="btn-ghost" id="clearInputBtn">Clear</button>
+        <span id="apiKeyToggle" style="cursor:pointer; text-decoration:underline; color:var(--text-faint); font-size:0.82rem;">API key</span>
+      </div>
+      <div class="status" id="status"></div>
+      <div class="key-panel" id="keyPanel">
+        <div style="height:10px;"></div>
+        <input type="password" id="apiKeyInput" placeholder="sk-ant-...">
+        <div class="key-note">This app calls the Anthropic API directly from your browser to generate each word's breakdown. Your key is stored only in this browser's local storage — never sent anywhere except api.anthropic.com. Get a key at console.anthropic.com if you don't have one. Not required for the other two tabs.</div>
+      </div>
+    </div>
+
+    <div class="mode-panel" id="mode-manual">
+      <div class="manual-grid">
+        <input type="text" id="m_word" placeholder="Word">
+        <input type="text" id="m_pos" placeholder="Part of speech (noun, verb…)">
+        <input type="text" id="m_pron_en" placeholder="Syllable pronunciation, e.g. dic-TA-tor">
+        <input type="text" id="m_pron_bn" placeholder="Bangla pronunciation, e.g. ডিক-টেই-টর">
+        <input type="text" id="m_meaningEn" placeholder="Meaning (English)">
+        <input type="text" id="m_meaningBn" placeholder="Meaning (Bengali)">
+        <input type="text" id="m_syn" placeholder="Synonyms, comma-separated">
+        <input type="text" id="m_ant" placeholder="Antonyms, comma-separated">
+        <textarea id="m_sentences" placeholder="Example sentences — one per line (up to 3)" style="min-height:70px;"></textarea>
+        <textarea id="m_paragraph" placeholder="Practice paragraph" style="min-height:70px;"></textarea>
+        <input type="text" id="m_note" placeholder="Usage note (optional)">
+        <div class="field-label" style="margin-top:2px;">Verb forms (present indefinite, past indefinite, past participle)</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;">
+          <input type="text" id="m_vf_present" placeholder="Present indefinite, e.g. see">
+          <input type="text" id="m_vf_past" placeholder="Past indefinite, e.g. saw">
+          <input type="text" id="m_vf_pastp" placeholder="Past participle, e.g. seen">
+        </div>
+        <div class="field-label" style="margin-top:2px;">Other forms of this word (it turning into a noun / verb / adjective)</div>
+        <textarea id="m_wordforms" placeholder="One per line: form word | part of speech | example sentence&#10;e.g. seeing | noun/adjective (participle) | I am seeing him." style="min-height:70px;"></textarea>
+      </div>
+      <div class="row">
+        <button class="btn-primary" id="manualAddBtn">Add word</button>
+        <button class="btn-ghost" id="manualClearBtn">Clear form</button>
+      </div>
+      <div class="status" id="manualStatus"></div>
+    </div>
+
+    <div class="mode-panel" id="mode-paste">
+      <div class="key-note" style="margin-bottom:10px;">Ask me in chat to generate this in JSON form for your day's words — I'll paste it in the format below. Then paste that JSON here.</div>
+      <textarea id="pasteInput" placeholder='Paste a JSON array like:&#10;[{"word":"see","partOfSpeech":"verb","pronunciationSyllables":"see","pronunciationBangla":"সী","meaningEnglish":"...","meaningBengali":"...","synonyms":["..."],"antonyms":["..."],"sentences":["...","...","..."],"paragraph":"...","usageNote":"...","verbForms":{"presentIndefinite":"see","pastIndefinite":"saw","pastParticiple":"seen"},"wordForms":[{"formWord":"seeing","pos":"noun/adjective (participle)","example":"I am seeing him."}]}]' style="min-height:120px; font-family:'IBM Plex Mono',monospace; font-size:0.82rem;"></textarea>
+      <div class="row">
+        <button class="btn-primary" id="pasteAddBtn">Add from JSON</button>
+        <button class="btn-ghost" id="pasteClearBtn">Clear</button>
+      </div>
+      <div class="status" id="pasteStatus"></div>
+    </div>
+  </div>
+
+  <div class="search-bar">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5.5" stroke="#616a79" stroke-width="1.4"/><path d="M11.5 11.5L15 15" stroke="#616a79" stroke-width="1.4" stroke-linecap="round"/></svg>
+    <input type="text" id="searchInput" placeholder="Search a word you've already logged, or check if you've added one…">
+  </div>
+  <div class="search-meta" id="searchMeta"></div>
+
+  <div class="tabs">
+    <div class="tab active" data-view="log">Log</div>
+    <div class="tab" data-view="mastered">Mastered</div>
+    <div class="tab" data-view="review">Needs review</div>
+  </div>
+
+  <div id="skeletonZone"></div>
+
+  <div class="view active" id="view-log"></div>
+  <div class="view" id="view-mastered"></div>
+  <div class="view" id="view-review"></div>
+
+</main>
+
+<footer>Everything here lives only in this browser. Export isn't built in yet — copy any paragraph or word list you want to keep elsewhere.</footer>
+</div>
+
+<div id="detailRoot">
+  <div class="portal-topbar">
+    <a href="#/" class="back-link">&larr; Back to Lexicon</a>
+    <span class="portal-brand">Lex<em>icon</em></span>
+  </div>
+  <div id="detailContent"></div>
+</div>
+
+<div id="notfoundRoot">
+  <div class="portal-topbar">
+    <a href="#/" class="back-link">&larr; Back to Lexicon</a>
+    <span class="portal-brand">Lex<em>icon</em></span>
+  </div>
+  <div id="notfoundContent"></div>
+</div>
+
+<script>
+const STORAGE_KEY = 'lexicon_entries_v1';
+const GOAL_KEY = 'lexicon_goal_v1';
+const APIKEY_KEY = 'lexicon_apikey_v1';
+
+let entries = [];
+try{
+  const raw = localStorage.getItem(STORAGE_KEY);
+  const parsed = raw ? JSON.parse(raw) : [];
+  entries = Array.isArray(parsed) ? parsed : [];
+} catch(e){
+  console.warn('Could not read saved words, starting fresh for this session:', e);
+  entries = [];
+}
+let currentView = 'log';
+
+const $ = (id) => document.getElementById(id);
+
+function todayStr(){
+  return new Date().toISOString().slice(0,10);
+}
+
+function persist(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(entries.map(e => {
+      const clone = Object.assign({}, e);
+      delete clone.justAdded;
+      return clone;
+    })));
+  } catch(e){
+    console.warn('Could not save to this browser\'s storage:', e);
+    setStatus("Couldn't save — your browser's storage may be full or restricted (this happens in some in-app previews). Try opening the downloaded file directly.", true);
+  }
+}
+
+function save(){
+  persist();
+  if(typeof router === 'function'){ router(); } else { render(); }
+}
+
+function fmtDate(d){
+  const dt = new Date(d + 'T00:00:00');
+  const today = todayStr();
+  const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0,10);
+  if(d === today) return 'Today';
+  if(d === yesterday) return 'Yesterday';
+  return dt.toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'});
+}
+
+function computeStreak(){
+  const days = [...new Set(entries.map(e => e.date))].sort().reverse();
+  if(days.length === 0) return 0;
+  let streak = 0;
+  let cursor = new Date();
+  cursor.setHours(0,0,0,0);
+  for(let i=0;i<days.length;i++){
+    const expected = cursor.toISOString().slice(0,10);
+    if(days.includes(expected)){
+      streak++;
+      cursor.setDate(cursor.getDate()-1);
+    } else if(expected === todayStr()){
+      cursor.setDate(cursor.getDate()-1);
+      continue;
+    } else {
+      break;
+    }
+  }
+  return streak;
+}
+
+function renderStats(){
+  const total = entries.length;
+  const todayCount = entries.filter(e => e.date === todayStr()).length;
+  const goal = parseInt($('goalInput').value, 10) || 15;
+  $('statTotal').textContent = total;
+  $('statToday').textContent = todayCount;
+  $('statStreak').textContent = computeStreak();
+  const pct = Math.min(100, Math.round((todayCount / goal) * 100));
+  const fill = $('goalFill');
+  fill.style.width = pct + '%';
+  fill.classList.toggle('complete', todayCount >= goal);
+}
+
+const ICONS = {
+  check: '<svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.2 11.5L13 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  flag: '<svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M4 14V2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M4 3L12 3.5C12.6 3.53 12.7 4 12.3 4.4L10.2 6.5L12.3 8.6C12.7 9 12.6 9.47 12 9.5L4 10" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>',
+  trash: '<svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 4.5H13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M6 4.5V2.8C6 2.4 6.3 2 6.8 2H9.2C9.7 2 10 2.4 10 2.8V4.5" stroke="currentColor" stroke-width="1.6"/><path d="M4.3 4.5L4.9 13C4.95 13.6 5.4 14 6 14H10C10.6 14 11.05 13.6 11.1 13L11.7 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>'
+};
+
+function posClass(pos){
+  const p = (pos||'').toLowerCase();
+  if(p.startsWith('noun')) return 'noun';
+  if(p.startsWith('verb')) return 'verb';
+  if(p.startsWith('adj')) return 'adjective';
+  if(p.startsWith('adv')) return 'adverb';
+  return '';
+}
+
+function highlightSearchTerm(word, term){
+  const escaped = escapeHtml(word);
+  if(!term) return escaped;
+  try{
+    const re = new RegExp('(' + term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')', 'gi');
+    return escapeHtml(word).replace(re, '<mark>$1</mark>');
+  } catch(e){ return escaped; }
+}
+
+function portalWord(word, cssClass){
+  if(!word) return `<span class="${cssClass}">—</span>`;
+  return `<a class="${cssClass} portal-word" href="#/lookup/${encodeURIComponent(word.trim())}" title="Open '${escapeHtml(word)}'">${escapeHtml(word)}</a>`;
+}
+
+function portalChip(word, kind){
+  const label = escapeHtml(word);
+  return `<a class="chip ${kind}" href="#/lookup/${encodeURIComponent(word.trim())}" title="Open '${label}'">${label}<span class="portal-glyph">&rarr;</span></a>`;
+}
+
+function entryCard(e, searchTerm, opts){
+  opts = opts || {};
+  const syns = (e.synonyms||[]).map(s => portalChip(s, 'syn')).join('');
+  const ants = (e.antonyms||[]).map(a => portalChip(a, 'ant')).join('');
+  const sentences = (e.sentences||[]).map(s => `<li>${highlightWord(s, e.word)}</li>`).join('');
+  const paragraph = highlightWord(e.paragraph||'', e.word);
+  const pc = posClass(e.partOfSpeech);
+  const pron = (e.pronunciationSyllables || e.pronunciationBangla) ? `
+      <div class="entry-pron">${e.pronunciationSyllables ? escapeHtml(e.pronunciationSyllables) : ''}${e.pronunciationBangla ? `<span class="bn">${escapeHtml(e.pronunciationBangla)}</span>` : ''}</div>` : '';
+  const wordDisplay = searchTerm ? highlightSearchTerm(e.word, searchTerm) : escapeHtml(e.word);
+  const wordSpan = `<span class="entry-word">${wordDisplay}</span>`;
+  const wordBlockWord = opts.linkWord === false
+    ? wordSpan
+    : `<a class="entry-word-link" href="#/word/${encodeURIComponent(e.id)}" title="Open full entry for this word">${wordSpan}</a>`;
+
+  const vf = e.verbForms || {};
+  const hasVerbForms = vf.presentIndefinite || vf.pastIndefinite || vf.pastParticiple;
+  const verbFormsHtml = hasVerbForms ? `
+    <div class="field">
+      <div class="field-label">Verb forms</div>
+      <div class="verb-forms">
+        <div class="vf"><span class="vf-label">Present indefinite</span>${portalWord(vf.presentIndefinite, 'vf-word')}</div>
+        <span class="vf-arrow">&rarr;</span>
+        <div class="vf"><span class="vf-label">Past indefinite</span>${portalWord(vf.pastIndefinite, 'vf-word')}</div>
+        <span class="vf-arrow">&rarr;</span>
+        <div class="vf"><span class="vf-label">Past participle</span>${portalWord(vf.pastParticiple, 'vf-word')}</div>
+      </div>
+    </div>` : '';
+
+  const otherForms = e.wordForms || [];
+  const otherFormsHtml = otherForms.length ? `
+    <div class="field">
+      <div class="field-label">Other forms of this word</div>
+      <ul class="other-forms">
+        ${otherForms.map(f => `<li>
+          <div class="of-head">${portalWord(f.formWord, 'of-word')}${f.pos ? `<span class="of-pos">${escapeHtml(f.pos)}</span>` : ''}</div>
+          ${f.example ? `<div class="of-example">${highlightWord(f.example, f.formWord)}</div>` : ''}
+        </li>`).join('')}
+      </ul>
+    </div>` : '';
+
+  return `
+  <div class="entry ${pc ? 'pos-'+pc : ''} ${e.justAdded ? 'just-added' : ''}" data-id="${e.id}">
+    <div class="entry-head">
+      <div class="entry-word-block">
+        ${wordBlockWord}
+        <span class="entry-pos ${pc}">${escapeHtml(e.partOfSpeech||'')}</span>
+        ${pron}
+      </div>
+      <div class="entry-actions">
+        <button class="icon-btn ${e.mastered? 'mastered':''}" onclick="toggleMastered('${e.id}')" title="Mark mastered">${ICONS.check}</button>
+        <button class="icon-btn ${e.review? 'flagged':''}" onclick="toggleReview('${e.id}')" title="Flag for review">${ICONS.flag}</button>
+        <button class="icon-btn" onclick="deleteEntry('${e.id}')" title="Delete">${ICONS.trash}</button>
+      </div>
+    </div>
+    <div class="entry-body">
+      <div class="field">
+        <div class="field-label">Meaning</div>
+        <div class="meaning-en">${escapeHtml(e.meaningEnglish||'')}</div>
+        ${e.meaningBengali ? `<div class="meaning-bn">${escapeHtml(e.meaningBengali)}</div>` : ''}
+      </div>
+      ${verbFormsHtml}
+      ${otherFormsHtml}
+      ${syns ? `<div class="field"><div class="field-label">Synonyms</div><div class="chip-row">${syns}</div></div>` : ''}
+      ${ants ? `<div class="field"><div class="field-label">Antonyms</div><div class="chip-row">${ants}</div></div>` : ''}
+      ${sentences ? `<div class="field"><div class="field-label">Example sentences</div><ul class="sentences">${sentences}</ul></div>` : ''}
+      ${paragraph ? `<div class="field"><div class="field-label">Practice paragraph</div><div class="paragraph">${paragraph}</div></div>` : ''}
+      ${e.usageNote ? `<div class="field"><div class="field-label">Usage note</div><div class="usage-note">${escapeHtml(e.usageNote)}</div></div>` : ''}
+    </div>
+  </div>`;
+}
+
+function shortMeaning(text, maxWords){
+  if(!text) return '';
+  const words = text.trim().split(/\s+/);
+  if(words.length <= maxWords) return text.trim();
+  return words.slice(0, maxWords).join(' ') + '…';
+}
+
+function entryCardCompact(e, searchTerm){
+  const pc = posClass(e.partOfSpeech);
+  const wordDisplay = searchTerm ? highlightSearchTerm(e.word, searchTerm) : escapeHtml(e.word);
+  const shortEn = shortMeaning(e.meaningEnglish, 5);
+  const shortBn = !shortEn ? shortMeaning(e.meaningBengali, 5) : '';
+  const meaningHtml = shortEn ? escapeHtml(shortEn) : (shortBn ? escapeHtml(shortBn) : '');
+
+  return `
+  <div class="entry entry-compact ${pc ? 'pos-'+pc : ''} ${e.justAdded ? 'just-added' : ''}" data-id="${e.id}">
+    <a class="ec-link" href="#/word/${encodeURIComponent(e.id)}" title="Open full entry for this word">
+      <span class="ec-word">${wordDisplay}</span>
+      ${e.partOfSpeech ? `<span class="entry-pos ${pc}">${escapeHtml(e.partOfSpeech)}</span>` : ''}
+      ${meaningHtml ? `<span class="ec-meaning">${meaningHtml}</span>` : ''}
+    </a>
+    <div class="ec-actions">
+      <button class="icon-btn ${e.mastered ? 'mastered':''}" onclick="toggleMastered('${e.id}')" title="Mark mastered">${ICONS.check}</button>
+      <button class="icon-btn ${e.review ? 'flagged':''}" onclick="toggleReview('${e.id}')" title="Flag for review">${ICONS.flag}</button>
+      <button class="icon-btn" onclick="deleteEntry('${e.id}')" title="Delete">${ICONS.trash}</button>
+      <span class="ec-arrow">&rarr;</span>
+    </div>
+  </div>`;
+}
+
+function escapeHtml(str){
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+function highlightWord(text, word){
+  const escaped = escapeHtml(text);
+  if(!word) return escaped;
+  const re = new RegExp('\\b(' + word.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + '\\w*)', 'gi');
+  return escaped.replace(re, '<b>$1</b>');
+}
+
+let firstRenderDone = false;
+
+function render(){
+  renderStats();
+  const search = $('searchInput').value.trim();
+  const searchLower = search.toLowerCase();
+
+  let filtered = entries;
+  if(search){
+    filtered = filtered.filter(e => e.word.toLowerCase().includes(searchLower));
+  }
+
+  if(search){
+    const exact = entries.some(e => e.word.toLowerCase() === searchLower);
+    if(filtered.length === 0){
+      $('searchMeta').innerHTML = `No match for "<b>${escapeHtml(search)}</b>" — you haven't logged this word yet.`;
+    } else {
+      $('searchMeta').innerHTML = `${exact ? 'Already logged' : 'Found'} — <b>${filtered.length}</b> matching word${filtered.length>1?'s':''}.`;
+    }
+  } else {
+    $('searchMeta').textContent = '';
+  }
+
+  function renderList(list){
+    return list.map((e,i) => {
+      let html = entryCardCompact(e, search);
+      if(!firstRenderDone){
+        const delay = Math.min(i,12) * 35;
+        html = html.replace('class="entry ', 'class="entry reveal ')
+                   .replace(' data-id="', ` style="animation-delay:${delay}ms" data-id="`);
+      }
+      return html;
+    }).join('');
+  }
+
+  function alphaSort(list){
+    return [...list].sort((a,b)=> a.word.localeCompare(b.word, undefined, {sensitivity:'base'}) || a.createdAt - b.createdAt);
+  }
+
+  function letterGroupHtml(list){
+    const groups = {};
+    list.forEach(e => {
+      const ch = (e.word.trim().charAt(0) || '#').toUpperCase();
+      const key = /[A-Z]/.test(ch) ? ch : '#';
+      (groups[key] = groups[key]||[]).push(e);
+    });
+    let html = '';
+    Object.keys(groups).sort().forEach(letter => {
+      html += `<div class="day-group"><div class="letter-heading"><span class="letter-glyph">${letter}</span><span class="line"></span><span class="count">${groups[letter].length} word${groups[letter].length>1?'s':''}</span></div>`;
+      html += renderList(groups[letter]);
+      html += `</div>`;
+    });
+    return html;
+  }
+
+  const logEntries = alphaSort(filtered);
+  $('view-log').innerHTML = letterGroupHtml(logEntries) || emptyState('No words logged yet', 'Type a few words above and generate your first entries.');
+
+  const mastered = alphaSort(filtered.filter(e => e.mastered));
+  $('view-mastered').innerHTML = renderList(mastered) || emptyState('Nothing mastered yet', "Tap the check mark on a word once you've got it down.");
+
+  const review = alphaSort(filtered.filter(e => e.review));
+  $('view-review').innerHTML = renderList(review) || emptyState('No words flagged', 'Tap the flag icon on a word you want to revisit.');
+
+  renderRecentStrip();
+
+  firstRenderDone = true;
+  entries.forEach(e => delete e.justAdded);
+}
+
+function renderRecentStrip(){
+  const strip = $('recentStrip');
+  if(!strip) return;
+  if(!search_isActive()){
+    const recent = [...entries].sort((a,b)=>b.createdAt-a.createdAt).slice(0,8);
+    if(recent.length === 0){ strip.parentElement.style.display = 'none'; return; }
+    strip.parentElement.style.display = 'block';
+    strip.innerHTML = recent.map(e => `<a class="recent-chip" href="#/word/${encodeURIComponent(e.id)}">${escapeHtml(e.word)}${e.partOfSpeech ? `<span class="rc-pos">${escapeHtml(e.partOfSpeech)}</span>` : ''}</a>`).join('');
+  } else {
+    strip.parentElement.style.display = 'none';
+  }
+}
+function search_isActive(){
+  return !!$('searchInput').value.trim();
+}
+
+function emptyState(title, sub){
+  return `<div class="empty"><div class="glyph">§</div><div>${title}</div><div style="font-size:0.82rem;margin-top:6px;">${sub}</div></div>`;
+}
+
+window.toggleMastered = function(id){
+  const e = entries.find(x=>x.id===id); if(!e) return;
+  e.mastered = !e.mastered;
+  save();
+}
+window.toggleReview = function(id){
+  const e = entries.find(x=>x.id===id); if(!e) return;
+  e.review = !e.review;
+  save();
+}
+window.deleteEntry = function(id){
+  entries = entries.filter(x=>x.id!==id);
+  persist();
+  const raw = location.hash.replace(/^#\/?/, '');
+  const parts = raw.split('/').filter(Boolean);
+  if(parts[0] === 'word' && parts[1] === id){
+    location.hash = '#/';
+  } else {
+    router();
+  }
+}
+
+// Tabs
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    $('view-' + tab.dataset.view).classList.add('active');
+    currentView = tab.dataset.view;
+  });
+});
+
+$('searchInput').addEventListener('input', render);
+
+// Goal persistence
+const savedGoal = localStorage.getItem(GOAL_KEY);
+if(savedGoal) $('goalInput').value = savedGoal;
+$('goalInput').addEventListener('change', () => {
+  localStorage.setItem(GOAL_KEY, $('goalInput').value);
+});
+
+// API key panel
+const savedKey = localStorage.getItem(APIKEY_KEY);
+if(savedKey) $('apiKeyInput').value = savedKey;
+$('apiKeyToggle').addEventListener('click', () => {
+  $('keyPanel').classList.toggle('show');
+});
+$('apiKeyInput').addEventListener('change', () => {
+  localStorage.setItem(APIKEY_KEY, $('apiKeyInput').value.trim());
+});
+
+$('clearInputBtn').addEventListener('click', () => { $('wordInput').value=''; });
+
+// Mode dropdown (Add automatically / Add manually / Add from JSON)
+$('modeSelect').addEventListener('change', () => {
+  document.querySelectorAll('.mode-panel').forEach(p=>p.classList.remove('active'));
+  $('mode-' + $('modeSelect').value).classList.add('active');
+});
+
+function addEntryToStore(item, idx){
+  const now = Date.now();
+  entries.push({
+    id: 'e_' + now + '_' + (idx||0) + '_' + Math.floor(Math.random()*10000),
+    word: item.word || '',
+    partOfSpeech: item.partOfSpeech || '',
+    pronunciationSyllables: item.pronunciationSyllables || '',
+    pronunciationBangla: item.pronunciationBangla || '',
+    meaningEnglish: item.meaningEnglish || '',
+    meaningBengali: item.meaningBengali || '',
+    synonyms: item.synonyms || [],
+    antonyms: item.antonyms || [],
+    sentences: item.sentences || [],
+    paragraph: item.paragraph || '',
+    usageNote: item.usageNote || '',
+    verbForms: {
+      presentIndefinite: (item.verbForms && item.verbForms.presentIndefinite) || '',
+      pastIndefinite: (item.verbForms && item.verbForms.pastIndefinite) || '',
+      pastParticiple: (item.verbForms && item.verbForms.pastParticiple) || ''
+    },
+    wordForms: Array.isArray(item.wordForms) ? item.wordForms.map(f => ({
+      formWord: f.formWord || f.word || '',
+      pos: f.pos || f.partOfSpeech || '',
+      example: f.example || ''
+    })).filter(f => f.formWord) : [],
+    date: todayStr(),
+    createdAt: now + (idx||0),
+    mastered: false,
+    review: false,
+    justAdded: true
+  });
+}
+
+// Manual entry form
+function setInlineStatus(id, msg, isErr){
+  const s = $(id);
+  s.textContent = msg;
+  s.classList.add('show');
+  s.classList.toggle('err', !!isErr);
+}
+function clearInlineStatus(id){ $(id).classList.remove('show'); }
+
+$('manualAddBtn').addEventListener('click', () => {
+  const word = $('m_word').value.trim();
+  if(!word){ setInlineStatus('manualStatus', 'A word is required.', true); return; }
+  const item = {
+    word,
+    partOfSpeech: $('m_pos').value.trim(),
+    pronunciationSyllables: $('m_pron_en').value.trim(),
+    pronunciationBangla: $('m_pron_bn').value.trim(),
+    meaningEnglish: $('m_meaningEn').value.trim(),
+    meaningBengali: $('m_meaningBn').value.trim(),
+    synonyms: $('m_syn').value.split(',').map(s=>s.trim()).filter(Boolean),
+    antonyms: $('m_ant').value.split(',').map(s=>s.trim()).filter(Boolean),
+    sentences: $('m_sentences').value.split('\n').map(s=>s.trim()).filter(Boolean).slice(0,3),
+    paragraph: $('m_paragraph').value.trim(),
+    usageNote: $('m_note').value.trim(),
+    verbForms: {
+      presentIndefinite: $('m_vf_present').value.trim(),
+      pastIndefinite: $('m_vf_past').value.trim(),
+      pastParticiple: $('m_vf_pastp').value.trim()
+    },
+    wordForms: $('m_wordforms').value.split('\n').map(s=>s.trim()).filter(Boolean).map(line => {
+      const parts = line.split('|').map(p=>p.trim());
+      return { formWord: parts[0] || '', pos: parts[1] || '', example: parts[2] || '' };
+    }).filter(f => f.formWord)
+  };
+  addEntryToStore(item, 0);
+  persist();
+  ['m_word','m_pos','m_pron_en','m_pron_bn','m_meaningEn','m_meaningBn','m_syn','m_ant','m_sentences','m_paragraph','m_note','m_vf_present','m_vf_past','m_vf_pastp','m_wordforms'].forEach(id => $(id).value = '');
+  setInlineStatus('manualStatus', `"${word}" added.`, false);
+  render();
+});
+$('manualClearBtn').addEventListener('click', () => {
+  ['m_word','m_pos','m_pron_en','m_pron_bn','m_meaningEn','m_meaningBn','m_syn','m_ant','m_sentences','m_paragraph','m_note','m_vf_present','m_vf_past','m_vf_pastp','m_wordforms'].forEach(id => $(id).value = '');
+  clearInlineStatus('manualStatus');
+});
+
+// Paste-from-Claude JSON entry
+$('pasteAddBtn').addEventListener('click', () => {
+  const raw = $('pasteInput').value.trim();
+  if(!raw){ setInlineStatus('pasteStatus', 'Paste a JSON array first.', true); return; }
+  let clean = raw.replace(/^```json\s*/i,'').replace(/^```\s*/,'').replace(/```\s*$/,'');
+  let parsed;
+  try{
+    parsed = JSON.parse(clean);
+    if(!Array.isArray(parsed)) parsed = [parsed];
+  } catch(e){
+    setInlineStatus('pasteStatus', "That doesn't look like valid JSON — check for missing commas or brackets.", true);
+    return;
+  }
+  parsed.forEach((item, idx) => addEntryToStore(item, idx));
+  persist();
+  $('pasteInput').value = '';
+  setInlineStatus('pasteStatus', `Added ${parsed.length} word${parsed.length>1?'s':''}.`, false);
+  render();
+});
+$('pasteClearBtn').addEventListener('click', () => {
+  $('pasteInput').value = '';
+  clearInlineStatus('pasteStatus');
+});
+
+function setStatus(msg, isErr){
+  const s = $('status');
+  s.textContent = msg;
+  s.classList.add('show');
+  s.classList.toggle('err', !!isErr);
+}
+function clearStatus(){
+  $('status').classList.remove('show');
+}
+
+function showSkeletons(n){
+  let html = '';
+  for(let i=0;i<n;i++){
+    html += `<div class="skeleton"><div class="bar" style="width:40%"></div><div class="bar" style="width:90%"></div><div class="bar" style="width:70%"></div></div>`;
+  }
+  $('skeletonZone').innerHTML = html;
+}
+function clearSkeletons(){ $('skeletonZone').innerHTML = ''; }
+
+$('generateBtn').addEventListener('click', async () => {
+  const raw = $('wordInput').value.trim();
+  if(!raw){ setStatus('Type at least one word first.', true); return; }
+  const key = $('apiKeyInput').value.trim() || localStorage.getItem(APIKEY_KEY);
+  if(!key){
+    $('keyPanel').classList.add('show');
+    setStatus('Add your Anthropic API key above to generate entries.', true);
+    return;
+  }
+
+  const words = raw.split(/[\n,]+/).map(w=>w.trim()).filter(Boolean);
+  if(words.length === 0){ setStatus("Couldn't find any words in that input.", true); return; }
+  if(words.length > 25){ setStatus('Try 25 words or fewer at a time.', true); return; }
+
+  $('generateBtn').disabled = true;
+  clearStatus();
+  showSkeletons(Math.min(words.length, 4));
+  setStatus(`Generating ${words.length} word${words.length>1?'s':''}…`);
+
+  const systemPrompt = `You are a vocabulary study assistant helping a Bangladeshi student prepare for BCS, bank job, and university admission English sections. For each word given, produce a JSON object with these exact keys:
+- "word": the word as given
+- "partOfSpeech": e.g. "noun", "verb", "adjective", "adverb", "preposition" (just the one primary part of speech, lowercase)
+- "pronunciationSyllables": the word split into syllables with the stressed syllable in CAPS, e.g. "dic-TA-tor" or "phi-LAN-thro-py"
+- "pronunciationBangla": a phonetic rendering of the pronunciation in Bengali script, syllables separated by hyphens, e.g. "ডিক-টেই-টর"
+- "meaningEnglish": a concise one-line English definition
+- "meaningBengali": the Bengali meaning (in Bengali script)
+- "synonyms": array of 4-6 synonyms
+- "antonyms": array of 3-5 antonyms (if the word genuinely has no common antonym, return an empty array rather than inventing one)
+- "sentences": array of exactly 3 natural example sentences that each use the word
+- "paragraph": a single coherent paragraph of 45-60 words that naturally uses the word or its close forms (e.g. plural, -ly, -ness) 4 to 5 times total
+- "usageNote": one short factual sentence on the word's register or common context (e.g. "formal/academic register, common in news editorials and essay writing"). Do not invent specific exam years, specific past questions, or specific boards where the word "appeared" — only describe general register and typical context.
+- "verbForms": an object {"presentIndefinite","pastIndefinite","pastParticiple"} giving the three basic verb forms. If the word is a verb, fill all three (e.g. for "see": "see", "saw", "seen"). If the word is not a verb, still check whether it has a related verb form worth showing; if truly none applies, return empty strings for all three.
+- "wordForms": an array of objects {"formWord","pos","example"} showing how the word changes shape to function as a different part of speech (e.g. a verb's gerund/participle used as a noun or adjective, a noun's adjective form, etc.). For "see", include an entry like {"formWord":"seeing","pos":"noun/adjective (participle)","example":"I am seeing him."}. Include 1-3 such entries where genuinely applicable; return an empty array if the word has no other meaningful derived forms.
+
+Return ONLY a raw JSON array of these objects, one per input word, in the same order as given. No markdown code fences, no commentary, no extra text before or after the JSON.`;
+
+  try{
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": key,
+        "anthropic-version": "2023-06-01",
+        "anthropic-dangerous-direct-browser-access": "true"
+      },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-6",
+        max_tokens: 4000,
+        system: systemPrompt,
+        messages: [
+          { role: "user", content: "Words: " + words.join(", ") }
+        ]
+      })
+    });
+
+    if(!response.ok){
+      const errText = await response.text();
+      throw new Error(`API error (${response.status}): ${errText.slice(0,200)}`);
+    }
+
+    const data = await response.json();
+    const textBlock = (data.content || []).find(b => b.type === 'text');
+    if(!textBlock) throw new Error('No text returned from the model.');
+
+    let clean = textBlock.text.trim().replace(/^```json\s*/i,'').replace(/^```\s*/,'').replace(/```\s*$/,'');
+    let parsed;
+    try{
+      parsed = JSON.parse(clean);
+    } catch(parseErr){
+      throw new Error("Could not parse the model's response as JSON.");
+    }
+
+    parsed.forEach((item, idx) => {
+      if(!item.word) item.word = words[idx] || '';
+      addEntryToStore(item, idx);
+    });
+
+    persist();
+    $('wordInput').value = '';
+    clearStatus();
+    clearSkeletons();
+    render();
+
+  } catch(err){
+    clearSkeletons();
+    setStatus(err.message || 'Something went wrong generating entries.', true);
+  } finally {
+    $('generateBtn').disabled = false;
+  }
+});
+
+// ---- Portal / tunnel routing between words ----
+function showHome(){
+  $('homeRoot').style.display = 'block';
+  $('detailRoot').style.display = 'none';
+  $('notfoundRoot').style.display = 'none';
+  render();
+}
+
+function showDetail(entry){
+  $('homeRoot').style.display = 'none';
+  $('notfoundRoot').style.display = 'none';
+  $('detailRoot').style.display = 'block';
+  $('detailContent').innerHTML = entryCard(entry, '', {linkWord:false});
+  window.scrollTo(0,0);
+}
+
+function showNotFound(term){
+  $('homeRoot').style.display = 'none';
+  $('detailRoot').style.display = 'none';
+  $('notfoundRoot').style.display = 'block';
+  $('notfoundContent').innerHTML = `
+    <div class="notfound-box">
+      <div class="glyph">?</div>
+      <div>The description for <span class="term">${escapeHtml(term)}</span> is not available yet.</div>
+      <div class="sub">This word hasn't been added to your lexicon yet. Once you log it — auto-generated, pasted from Claude, or added manually — this portal will open straight to its full entry.</div>
+    </div>`;
+}
+
+function findEntryByWord(term){
+  const t = term.trim().toLowerCase();
+  return entries.find(e => e.word.trim().toLowerCase() === t);
+}
+
+function router(){
+  const raw = location.hash.replace(/^#\/?/, '');
+  const parts = raw.split('/').filter(Boolean).map(p => decodeURIComponent(p));
+
+  if(parts[0] === 'word' && parts[1]){
+    const entry = entries.find(e => e.id === parts[1]);
+    if(entry){ showDetail(entry); } else { showNotFound(parts[1]); }
+    return;
+  }
+  if(parts[0] === 'lookup' && parts[1]){
+    const term = parts[1];
+    const entry = findEntryByWord(term);
+    if(entry){
+      location.hash = '#/word/' + encodeURIComponent(entry.id);
+    } else {
+      showNotFound(term);
+    }
+    return;
+  }
+  showHome();
+}
+
+function safeRouter(){
+  try{
+    router();
+  } catch(err){
+    console.error('Routing error:', err);
+    $('homeRoot').style.display = 'none';
+    $('detailRoot').style.display = 'none';
+    $('notfoundRoot').style.display = 'block';
+    $('notfoundContent').innerHTML = `
+      <div class="notfound-box">
+        <div class="glyph">!</div>
+        <div>Something went wrong loading this page.</div>
+        <div class="sub">Try going back to the lexicon. If this keeps happening, it usually means the preview link expired — download the file and open it directly instead.</div>
+      </div>`;
+  }
+}
+
+window.addEventListener('hashchange', safeRouter);
+safeRouter();
+</script>
+
+</body>
+</html>
