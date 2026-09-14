@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0b0e15">
+<title>Lexicon — Vocabulary Vault</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0d13;
+    --bg-elev:#11151f;
+    --bg-elev-2:#161c29;
+    --border:#232a3b;
+    --border-soft:#1a2030;
+    --text:#e9ebf2;
+    --text-dim:#929aad;
+    --text-faint:#5c6478;
+    --teal:#33d9bf;
+    --gold:#dba75a;
+    --gold-soft:#e8c07f;
+    --blue:#7686f7;
+    --green:#3ecf95;
+    --coral:#f0705f;
+    --radius-lg:18px;
+    --radius-md:12px;
+    --radius-sm:8px;
+    --shadow:0 8px 30px rgba(0,0,0,.35);
+    --maxw:640px;
+  }
+  [data-theme="light"]{
+    --bg:#f6f5f1;
+    --bg-elev:#ffffff;
+    --bg-elev-2:#f0eee8;
+    --border:#e2ded4;
+    --border-soft:#ebe8e0;
+    --text:#22242b;
+    --text-dim:#63677a;
+    --text-faint:#9297a6;
+    --shadow:0 8px 24px rgba(30,25,15,.08);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',system-ui,sans-serif;
+    min-height:100vh;
+    overflow-x:hidden;
+    transition:background .25s ease,color .25s ease;
+  }
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 18px 100px;}
+  a{color:inherit;}
+  button{font-family:inherit;}
+  ::selection{background:var(--teal); color:#03231e;}
+
+  /* ---------- HEADER ---------- */
+  header.topbar{
+    display:flex; align-items:flex-start; gap:14px;
+    padding:22px 18px 16px; max-width:var(--maxw); margin:0 auto;
+  }
+  .icon-btn{
+    width:42px; height:42px; border-radius:12px; border:1px solid var(--border);
+    background:var(--bg-elev); display:flex; align-items:center; justify-content:center;
+    cursor:pointer; flex-shrink:0; color:var(--text);
+  }
+  .icon-btn:active{transform:scale(.94);}
+  .brandblock{flex:1; min-width:0;}
+  .brand{display:flex; align-items:center; gap:8px;}
+  .brand svg{color:var(--teal); flex-shrink:0;}
+  .brand-name{font-family:'Fraunces',serif; font-size:26px; font-weight:700; letter-spacing:-.01em; white-space:nowrap;}
+  .brand-name .accent{font-style:italic; font-weight:500; color:var(--gold-soft);}
+  .tagline{color:var(--text-dim); font-size:13px; line-height:1.5; margin-top:6px; max-width:400px;}
+  .menu-btn{margin-top:2px;}
+
+  /* ---------- GREETING ---------- */
+  .greeting h1{font-family:'Fraunces',serif; font-size:25px; font-weight:600; margin:18px 0 4px;}
+  .greeting p{color:var(--text-dim); font-size:14.5px; margin:0 0 20px; line-height:1.5;}
+
+  /* ---------- STAT CARDS ---------- */
+  .stat-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px;}
+  .stat-card{
+    background:var(--bg-elev); border:1px solid var(--c, var(--border));
+    border-radius:var(--radius-lg); padding:18px 16px; cursor:pointer;
+    transition:transform .15s ease, border-color .15s ease;
+  }
+  .stat-card:active{transform:scale(.97);}
+  .stat-card .lbl{font-size:11.5px; letter-spacing:.08em; color:var(--text-dim); font-weight:600;}
+  .stat-card .num{font-family:'Fraunces',serif; font-size:34px; font-weight:600; margin:6px 0 2px; color:var(--c);}
+  .stat-card .sub{font-size:12.5px; color:var(--text-faint);}
+
+  /* ---------- GOAL ---------- */
+  .goal-card{
+    background:var(--bg-elev); border:1px solid var(--border); border-radius:var(--radius-lg);
+    padding:16px 18px; margin-bottom:16px;
+  }
+  .goal-top{display:flex; align-items:center; justify-content:space-between; cursor:pointer; gap:10px;}
+  .goal-top .title{font-weight:600; font-size:15px;}
+  .goal-count{font-family:'Fraunces',serif; font-size:20px; font-weight:600;}
+  .goal-count .sep{color:var(--text-faint); font-weight:400; margin:0 3px;}
+  .goal-count .target{color:var(--text-dim); font-size:16px;}
+  .goal-bar-track{height:8px; border-radius:6px; background:var(--bg-elev-2); margin-top:12px; overflow:hidden;}
+  .goal-bar-fill{height:100%; border-radius:6px; background:linear-gradient(90deg, var(--teal), var(--gold), var(--coral)); transition:width .4s ease;}
+  .goal-detail{max-height:0; overflow:hidden; transition:max-height .3s ease;}
+  .goal-detail.open{max-height:220px; margin-top:14px;}
+  .goal-detail-inner{padding-top:12px; border-top:1px solid var(--border-soft);}
+  .field-row{display:flex; gap:10px; margin-bottom:10px;}
+  select, input[type=text], input[type=number], textarea{
+    width:100%; background:var(--bg-elev-2); border:1px solid var(--border); color:var(--text);
+    border-radius:var(--radius-sm); padding:10px 12px; font-size:14px; font-family:inherit;
+  }
+  select:focus, input:focus, textarea:focus{outline:2px solid var(--teal); outline-offset:1px;}
+  label.flabel{font-size:11.5px; color:var(--text-dim); font-weight:600; letter-spacing:.03em; display:block; margin-bottom:5px;}
+
+  /* ---------- SEARCH ---------- */
+  .search-wrap{position:relative; margin-bottom:18px;}
+  .search-wrap svg{position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--text-faint);}
+  .search-wrap input{padding-left:40px; height:46px; border-radius:var(--radius-md);}
+
+  /* ---------- ADD WORD ---------- */
+  .add-card{background:var(--bg-elev); border:1px solid var(--border); border-radius:var(--radius-lg); padding:16px 18px; margin-bottom:22px;}
+  .add-card > .title{font-weight:600; font-size:15px; margin-bottom:12px;}
+  .btn{
+    border-radius:var(--radius-sm); border:1px solid var(--border); background:var(--bg-elev-2);
+    color:var(--text); padding:12px 16px; font-size:14.5px; font-weight:600; cursor:pointer;
+    display:inline-flex; align-items:center; justify-content:center; gap:6px;
+  }
+  .btn:active{transform:scale(.97);}
+  .btn-gold{background:linear-gradient(180deg, var(--gold-soft), var(--gold)); color:#2a1c05; border:none;}
+  .btn-outline{background:transparent;}
+  .btn-row{display:flex; gap:10px; margin-top:12px;}
+  .btn-row .btn{flex:1;}
+  .btn-full{width:100%;}
+
+  /* ---------- RECENT SCROLL ---------- */
+  .section-title{font-weight:600; font-size:15px; margin:0 0 12px; display:flex; align-items:center; justify-content:space-between;}
+  .recent-scroll{display:flex; gap:8px; overflow-x:auto; padding-bottom:6px; margin-bottom:24px; scrollbar-width:none;}
+  .recent-scroll::-webkit-scrollbar{display:none;}
+  .recent-pill{
+    flex-shrink:0; background:var(--bg-elev); border:1px solid var(--border); border-radius:999px;
+    padding:9px 16px; font-size:13.5px; font-weight:600; cursor:pointer; white-space:nowrap;
+  }
+  .recent-pill:active{transform:scale(.95);}
+
+  /* ---------- TABS ---------- */
+  .tabbar{display:flex; gap:20px; border-bottom:1px solid var(--border-soft); margin-bottom:18px; overflow-x:auto;}
+  .tab{padding:0 0 12px; font-size:14.5px; color:var(--text-dim); font-weight:600; cursor:pointer; border-bottom:2px solid transparent; white-space:nowrap;}
+  .tab.active{color:var(--gold-soft); border-color:var(--gold-soft);}
+
+  /* ---------- WORD LIST ---------- */
+  .letter-row{display:flex; align-items:center; gap:10px; margin:18px 0 10px;}
+  .letter-badge{
+    width:26px; height:26px; border:1px solid var(--gold); border-radius:7px; color:var(--gold-soft);
+    display:flex; align-items:center; justify-content:center; font-family:'Fraunces',serif; font-weight:700; font-size:13px; flex-shrink:0;
+  }
+  .letter-line{flex:1; height:1px; background:var(--border-soft);}
+  .word-card{
+    display:flex; align-items:center; gap:10px; background:var(--bg-elev); border:1px solid var(--border-soft);
+    border-left:3px solid var(--gold); border-radius:10px; padding:13px 14px; margin-bottom:8px; cursor:pointer;
+  }
+  .word-card:active{transform:scale(.985);}
+  .word-card .w-main{flex:1; min-width:0;}
+  .word-card .w-title{font-family:'Fraunces',serif; font-weight:700; font-size:16px;}
+  .word-card .w-def{font-size:12.5px; color:var(--text-faint); margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .pos-chip{font-size:11px; color:var(--text-dim); border:1px solid var(--border); border-radius:999px; padding:3px 9px; flex-shrink:0;}
+  .flag-dots{display:flex; gap:4px; flex-shrink:0;}
+  .flag-dot{width:7px; height:7px; border-radius:50%;}
+  .empty-state{text-align:center; padding:50px 20px; color:var(--text-faint);}
+  .empty-state svg{margin-bottom:14px; opacity:.5;}
+  .empty-state .t{font-family:'Fraunces',serif; font-size:18px; color:var(--text-dim); margin-bottom:4px;}
+
+  .log-day{margin-bottom:22px;}
+  .log-day-label{font-size:12.5px; font-weight:700; color:var(--text-faint); text-transform:uppercase; letter-spacing:.06em; margin-bottom:10px;}
+
+  /* ---------- SIDEBAR ---------- */
+  .overlay{position:fixed; inset:0; background:rgba(0,0,0,.5); opacity:0; pointer-events:none; transition:opacity .25s ease; z-index:40;}
+  .overlay.show{opacity:1; pointer-events:auto;}
+  .sidebar{
+    position:fixed; top:0; left:0; bottom:0; width:290px; max-width:84vw; background:var(--bg-elev);
+    border-right:1px solid var(--border); z-index:50; transform:translateX(-100%); transition:transform .28s ease;
+    display:flex; flex-direction:column; padding:20px 18px; overflow-y:auto;
+  }
+  .sidebar.show{transform:translateX(0);}
+  .sb-brand{display:flex; align-items:center; gap:9px; margin-bottom:22px;}
+  .sb-brand svg{color:var(--teal);}
+  .sb-brand span{font-family:'Fraunces',serif; font-size:20px; font-weight:700;}
+  .sb-section{margin-bottom:24px;}
+  .sb-heading{font-size:11px; letter-spacing:.08em; color:var(--text-faint); font-weight:700; margin-bottom:10px;}
+  .lang-item{
+    display:flex; align-items:center; justify-content:between; gap:8px; padding:11px 12px; border-radius:10px;
+    cursor:pointer; margin-bottom:4px; font-size:14.5px; font-weight:600; border:1px solid transparent;
+  }
+  .lang-item.active{background:var(--bg-elev-2); border-color:var(--border); color:var(--gold-soft);}
+  .lang-item .count{margin-left:auto; font-size:12px; color:var(--text-faint); font-weight:500;}
+  .sb-link{display:flex; align-items:center; gap:10px; padding:11px 12px; border-radius:10px; cursor:pointer; font-size:14px; font-weight:600; color:var(--text);}
+  .sb-link:active{background:var(--bg-elev-2);}
+  .sb-link svg{flex-shrink:0; color:var(--text-dim);}
+
+  /* ---------- MODALS ---------- */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:60; display:none;
+    align-items:flex-end; justify-content:center;
+  }
+  .modal-overlay.show{display:flex;}
+  .modal{
+    background:var(--bg-elev); width:100%; max-width:var(--maxw); border-radius:20px 20px 0 0;
+    max-height:88vh; overflow-y:auto; padding:22px 20px 30px; border:1px solid var(--border); border-bottom:none;
+  }
+  @media(min-width:680px){
+    .modal-overlay{align-items:center;}
+    .modal{border-radius:20px; border-bottom:1px solid var(--border); max-height:82vh;}
+  }
+  .modal-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;}
+  .modal-head h3{font-family:'Fraunces',serif; font-size:19px; margin:0;}
+  .close-x{width:32px; height:32px; border-radius:50%; background:var(--bg-elev-2); border:none; color:var(--text); font-size:16px; cursor:pointer;}
+  .field{margin-bottom:14px;}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .err-msg{color:var(--coral); font-size:13px; margin-top:8px;}
+  .counter-hint{font-size:11.5px; color:var(--text-faint); margin-top:5px;}
+  .counter-hint.ok{color:var(--green);}
+
+  /* ---------- DROPDOWN MENU ---------- */
+  .dropdown-menu{
+    position:absolute; top:64px; right:18px; background:var(--bg-elev); border:1px solid var(--border);
+    border-radius:12px; box-shadow:var(--shadow); z-index:45; overflow:hidden; min-width:190px;
+    display:none;
+  }
+  .dropdown-menu.show{display:block;}
+  .dd-item{padding:12px 16px; font-size:14px; font-weight:500; cursor:pointer; display:flex; align-items:center; gap:9px;}
+  .dd-item:active{background:var(--bg-elev-2);}
+  .dd-item + .dd-item{border-top:1px solid var(--border-soft);}
+
+  /* ---------- WORD DETAIL ---------- */
+  .back-row{display:flex; align-items:center; gap:12px; padding:20px 0 6px;}
+  .detail-head{margin:14px 0 6px;}
+  .detail-word{font-family:'Fraunces',serif; font-size:32px; font-weight:700;}
+  .detail-sub{color:var(--text-dim); font-size:14.5px; display:flex; align-items:center; gap:10px; margin-top:4px; flex-wrap:wrap;}
+  .status-row{display:flex; gap:8px; margin:16px 0 22px; flex-wrap:wrap;}
+  .status-chip{
+    border:1px solid var(--border); border-radius:999px; padding:8px 14px; font-size:13px; font-weight:600;
+    cursor:pointer; background:var(--bg-elev); color:var(--text-dim); display:flex; align-items:center; gap:6px;
+  }
+  .status-chip.on{color:#fff; border-color:transparent;}
+  .status-chip.on[data-k="mastered"]{background:var(--green); color:#04241a;}
+  .status-chip.on[data-k="review"]{background:var(--gold); color:#2a1c05;}
+  .status-chip.on[data-k="important"]{background:var(--coral); color:#2a0e08;}
+  .detail-block{margin-bottom:22px;}
+  .detail-block h4{font-size:12px; letter-spacing:.07em; text-transform:uppercase; color:var(--text-faint); font-weight:700; margin:0 0 8px;}
+  .detail-block p, .detail-block li{font-size:15px; line-height:1.6; color:var(--text);}
+  .detail-block ul{margin:0; padding-left:20px;}
+  .chip-row{display:flex; flex-wrap:wrap; gap:8px;}
+  .chip{background:var(--bg-elev-2); border:1px solid var(--border); border-radius:999px; padding:6px 12px; font-size:13px;}
+  .forms-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .form-item{background:var(--bg-elev-2); border-radius:10px; padding:10px 12px;}
+  .form-item .k{font-size:11px; color:var(--text-faint); text-transform:uppercase; letter-spacing:.05em;}
+  .form-item .v{font-size:14.5px; margin-top:3px; font-weight:600;}
+  .danger-row{display:flex; gap:10px; margin-top:30px; padding-top:20px; border-top:1px solid var(--border-soft);}
+
+  @media(min-width:520px){ .stat-grid{grid-template-columns:repeat(4,1fr);} }
+</style>
+</head>
+<body>
+
+<div class="overlay" id="overlay" onclick="closeAllOverlays()"></div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <div class="sb-brand">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H12v20H6.5A2.5 2.5 0 0 0 4 24.5"/><path d="M20 4.5A2.5 2.5 0 0 0 17.5 2H12v20h5.5a2.5 2.5 0 0 1 2.5 2.5" transform="translate(0,-2)"/></svg>
+    <span>Lex<i style="color:var(--gold-soft)">icon</i></span>
+  </div>
+
+  <div class="sb-section">
+    <div class="sb-heading">LANGUAGE VAULTS</div>
+    <div id="sbLanguages"></div>
+    <div class="sb-link" onclick="addLanguage()" style="margin-top:6px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+      Add language
+    </div>
+  </div>
+
+  <div class="sb-section">
+    <div class="sb-heading">DATA</div>
+    <div class="sb-link" onclick="exportJSON()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 19h16"/></svg>
+      Export JSON
+    </div>
+    <div class="sb-link" onclick="exportCSV()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 19h16"/></svg>
+      Export CSV
+    </div>
+    <div class="sb-link" onclick="document.getElementById('importFile').click()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21V9m0 0 4 4m-4-4-4 4M4 5h16"/></svg>
+      Import data
+    </div>
+    <input type="file" id="importFile" accept="application/json" style="display:none" onchange="importJSONFile(event)">
+  </div>
+
+  <div class="sb-section">
+    <div class="sb-heading">PREFERENCES</div>
+    <div class="sb-link" onclick="toggleTheme()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      Toggle theme
+    </div>
+    <div class="sb-link" onclick="if(confirm('Erase all vault data on this device? This cannot be undone.')) resetAll()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m2 0-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+      Erase vault
+    </div>
+  </div>
+</nav>
+
+<!-- HEADER -->
+<header class="topbar">
+  <button class="icon-btn menu-btn" onclick="openSidebar()" aria-label="Menu">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+  </button>
+  <div class="brandblock">
+    <div class="brand">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 5.5A2.5 2.5 0 0 1 4.5 3H11v18H4.5A2.5 2.5 0 0 1 2 18.5z"/><path d="M22 5.5A2.5 2.5 0 0 0 19.5 3H13v18h6.5a2.5 2.5 0 0 1 2.5 2.5V5.5"/></svg>
+      <span class="brand-name">Lex<span class="accent">icon</span></span>
+    </div>
+    <p class="tagline">A running dictionary of every word you've studied for BCS, bank, and admission prep — meaning, synonym, antonym, pronunciation, and usage, logged day by day.</p>
+  </div>
+  <button class="icon-btn" onclick="toggleDots(event)" aria-label="More">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>
+  </button>
+</header>
+
+<div class="dropdown-menu" id="dotsMenu">
+  <div class="dd-item" onclick="closeAllOverlays(); openSidebar();">Manage languages</div>
+  <div class="dd-item" onclick="closeAllOverlays(); toggleTheme();">Toggle theme</div>
+  <div class="dd-item" onclick="closeAllOverlays(); exportJSON();">Export vault</div>
+</div>
+
+<main class="wrap" id="app"></main>
+
+<!-- MODAL: Manual add / edit -->
+<div class="modal-overlay" id="modalManual">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="manualTitle">Add a word</h3>
+      <button class="close-x" onclick="closeModal('modalManual')">✕</button>
+    </div>
+    <div class="field">
+      <label class="flabel">Word</label>
+      <input type="text" id="f_word" placeholder="e.g. Ephemeral">
+    </div>
+    <div class="field">
+      <label class="flabel">Part of speech</label>
+      <select id="f_pos">
+        <option>noun</option><option>verb</option><option>adjective</option>
+        <option>adverb</option><option>phrase</option><option>other</option>
+      </select>
+    </div>
+    <div class="grid2">
+      <div class="field">
+        <label class="flabel">Pronunciation (English, syllables)</label>
+        <input type="text" id="f_pron_en" placeholder="e-FEM-er-al">
+      </div>
+      <div class="field">
+        <label class="flabel">Pronunciation (বাংলা, syllables)</label>
+        <input type="text" id="f_pron_bn" placeholder="ই-ফে-মে-রাল">
+      </div>
+    </div>
+    <div class="field">
+      <label class="flabel">Definition</label>
+      <textarea id="f_def" rows="2" placeholder="Meaning of the word"></textarea>
+    </div>
+    <div class="grid2">
+      <div class="field">
+        <label class="flabel">Synonyms (comma separated)</label>
+        <input type="text" id="f_syn" placeholder="fleeting, transient">
+      </div>
+      <div class="field">
+        <label class="flabel">Antonyms (comma separated)</label>
+        <input type="text" id="f_ant" placeholder="permanent, lasting">
+      </div>
+    </div>
+    <div class="field">
+      <label class="flabel">Example sentences — one per line, at least 3</label>
+      <textarea id="f_examples" rows="4" placeholder="Fame in this industry is often ephemeral.&#10;Her enthusiasm proved ephemeral, fading within a week.&#10;Cherry blossoms are prized precisely because their beauty is ephemeral." oninput="updateCounters()"></textarea>
+      <div class="counter-hint" id="examplesCounter">0 of 3 sentences</div>
+    </div>
+    <div class="field">
+      <label class="flabel">Contextual paragraph — 5 to 7 sentences</label>
+      <textarea id="f_para" rows="6" placeholder="Write a short passage that uses the word naturally in context, long enough to show how it behaves in real writing." oninput="updateCounters()"></textarea>
+      <div class="counter-hint" id="paraCounter">0 of 5–7 sentences</div>
+    </div>
+    <div class="field">
+      <label class="flabel">Grammatical forms</label>
+      <div class="grid2">
+        <input type="text" id="f_form_noun" placeholder="Noun form">
+        <input type="text" id="f_form_verb" placeholder="Verb form">
+      </div>
+      <div class="grid2" style="margin-top:10px;">
+        <input type="text" id="f_form_adj" placeholder="Adjective form">
+        <input type="text" id="f_form_adv" placeholder="Adverb form">
+      </div>
+    </div>
+    <div class="field">
+      <label class="flabel">Grammar & usage notes</label>
+      <textarea id="f_notes" rows="3" placeholder="Any grammar rules, exceptions, prepositions it pairs with, register (formal/informal), or other usage notes for this word"></textarea>
+    </div>
+    <div class="field">
+      <label class="flabel">Language vault</label>
+      <select id="f_lang"></select>
+    </div>
+    <div class="err-msg" id="manualErr"></div>
+    <button class="btn btn-gold btn-full" style="margin-top:6px;" onclick="submitManual()">Save word</button>
+  </div>
+</div>
+
+<!-- MODAL: JSON import -->
+<div class="modal-overlay" id="modalJSON">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Add from JSON</h3>
+      <button class="close-x" onclick="closeModal('modalJSON')">✕</button>
+    </div>
+    <p style="color:var(--text-dim); font-size:13.5px; line-height:1.5;">Paste an array of word objects. Supported keys: word, pos, pronunciationEn, pronunciationBn, definition, synonyms, antonyms, examples, paragraph, forms, notes.</p>
+    <textarea id="jsonInput" rows="10" placeholder='[{"word":"Arcadian","pos":"adjective","definition":"idyllically rural or pastoral"}]'></textarea>
+    <div class="err-msg" id="jsonErr"></div>
+    <button class="btn btn-gold btn-full" style="margin-top:12px;" onclick="submitJSON()">Import words</button>
+  </div>
+</div>
+
+<script>
+/* ================= STATE ================= */
+const STORAGE_KEY = 'lexicon_vault_v1';
+
+function defaultState(){
+  return {
+    languages: ['english','japanese','bengali','arabic'],
+    currentLanguage: 'english',
+    goalTarget: 20,
+    theme: 'dark',
+    words: [
+      seedWord('Arcade','noun','ar-KAYD','আর-কেইড', 'A covered passageway lined with shops, or a venue with coin-operated games.',
+        ['gallery','passage'],['dead end'],
+        [
+          'We spent the rainy afternoon in the arcade playing pinball.',
+          'The shopping arcade stayed cool even in the height of summer.',
+          'Victorian arcades were among the first buildings in the city to use large panes of glass.'
+        ],
+        'Down the old high street stood a Victorian arcade, its glass roof throwing patterned light onto rows of small, independent shops. Shoppers drifted between a bookseller, a tailor, and a shop that sold nothing but buttons. Unlike the modern mall a few streets over, the arcade had never been renovated, and its worn tile floor still carried the pattern laid down over a century earlier. Locals treated it less as a shortcut and more as a destination, a place to browse rather than simply pass through. On market days it filled with the smell of fresh bread from the corner bakery, drawing in visitors who had only meant to walk past.',
+        {noun:'arcade', verb:'—', adjective:'arcaded', adverb:'—'},
+        'In British English "arcade" more often refers to a covered shopping passage; in American English it usually means a video-game venue. Always used as a common noun, capitalized only when part of a proper name (e.g. "Trocadero Arcade").',
+        true, false, false),
+      seedWord('Assembly','noun','uh-SEM-blee','আ-সেম-ব্লি', 'A group of people gathered together for a purpose, or the process of putting parts together.',
+        ['gathering','congregation'],['dispersal'],
+        [
+          'The whole school gathered for morning assembly.',
+          'Assembly of the bookshelf took nearly two hours without instructions.',
+          'The state assembly voted to postpone the session until next month.'
+        ],
+        'The factory floor hummed with activity during the final assembly of each unit, workers moving in practiced rhythm from station to station. A supervisor walked the line every hour, checking torque settings and noting any part that had been fitted out of sequence. New hires spent their first two weeks shadowing veterans before being trusted with a station of their own. Management measured the line not by hours worked but by units completed, a distinction that shaped every decision on the floor. By the end of a shift, roughly four hundred units left the assembly and moved on to packaging, each one carrying a small stamped code marking exactly where and when it had been built.',
+        {noun:'assembly', verb:'assemble', adjective:'assembled', adverb:'—'},
+        'Countable when referring to a specific gathering or legislative body ("the assembly voted"), uncountable when referring to the general process of construction ("assembly is required"). Often paired with "line" (assembly line) as a fixed compound noun.',
+        false, true, false),
+      seedWord('Autocrat','noun','AW-tuh-krat','অ-টো-ক্র্যাট', 'A ruler who has absolute power, especially one who governs without consulting others.',
+        ['dictator','tyrant'],['democrat'],
+        [
+          'The general ruled the province like an autocrat.',
+          'Critics accused the new chairman of running the company as an autocrat rather than a leader.',
+          'Even his allies admitted he could be an autocrat when decisions had to be made quickly.'
+        ],
+        'Historians still debate whether the emperor was a calculating autocrat or simply a ruler shaped by the paranoia of his court. Contemporary accounts describe a man who trusted almost no one, reshuffling his closest advisors every few years to prevent any single figure from gaining too much influence. Yet the same records show long stretches of stable, even generous governance, suggesting the label may say as much about how power was perceived as about how it was used. Later rulers invoked his name selectively, praising his firmness while quietly abandoning his more punitive laws. The word itself entered common use in the following century, usually as an insult rather than a neutral description.',
+        {noun:'autocracy', verb:'—', adjective:'autocratic', adverb:'autocratically'},
+        'Almost always carries a negative connotation, unlike the more neutral "monarch" or "ruler." Frequently used loosely and hyperbolically outside of politics, e.g. to describe a controlling manager or coach.',
+        false, false, true),
+    ],
+  };
+}
+
+function seedWord(word,pos,pronEn,pronBn,def,syn,ant,examples,para,forms,notes,mastered,review,important){
+  return {
+    id:'w_'+Math.random().toString(36).slice(2,10),
+    word,pos,pronunciationEn:pronEn,pronunciationBn:pronBn,definition:def,
+    synonyms:syn||[],antonyms:ant||[],examples:examples||[],paragraph:para||'',
+    forms:forms||{noun:'',verb:'',adjective:'',adverb:''},
+    notes:notes||'',
+    language:'english',
+    mastered:!!mastered, review:!!review, important:!!important,
+    dateAdded:new Date(Date.now()-Math.floor(Math.random()*4)*86400000).toISOString(),
+  };
+}
+
+let state = loadState();
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return defaultState();
+    const parsed = JSON.parse(raw);
+    return Object.assign(defaultState(), parsed);
+  }catch(e){ return defaultState(); }
+}
+function saveState(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  document.documentElement.setAttribute('data-theme', state.theme);
+}
+saveState();
+
+/* ================= HELPERS ================= */
+function uid(){ return 'w_'+Math.random().toString(36).slice(2,10); }
+function esc(s){ return (s||'').toString().replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function currentWords(){ return state.words.filter(w => w.language === state.currentLanguage); }
+function wordsToday(){
+  const today = new Date().toDateString();
+  return currentWords().filter(w => new Date(w.dateAdded).toDateString() === today);
+}
+function greeting(){
+  const h = new Date().getHours();
+  if(h < 12) return 'Good morning';
+  if(h < 17) return 'Good afternoon';
+  return 'Good evening';
+}
+function timeAgoOrDate(iso){
+  const d = new Date(iso);
+  const days = Math.floor((Date.now()-d.getTime())/86400000);
+  if(days<=0) return 'Today';
+  if(days===1) return 'Yesterday';
+  return d.toLocaleDateString(undefined,{month:'short',day:'numeric'});
+}
+function capitalize(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
+
+/* ================= SIDEBAR / OVERLAYS ================= */
+function openSidebar(){
+  renderSidebarLanguages();
+  document.getElementById('sidebar').classList.add('show');
+  document.getElementById('overlay').classList.add('show');
+}
+function closeAllOverlays(){
+  document.getElementById('sidebar').classList.remove('show');
+  document.getElementById('overlay').classList.remove('show');
+  document.getElementById('dotsMenu').classList.remove('show');
+}
+function toggleDots(e){
+  e.stopPropagation();
+  document.getElementById('dotsMenu').classList.toggle('show');
+}
+document.addEventListener('click', function(e){
+  const dd = document.getElementById('dotsMenu');
+  if(dd.classList.contains('show') && !dd.contains(e.target) && e.target.id !== 'dotsMenu') dd.classList.remove('show');
+});
+
+function renderSidebarLanguages(){
+  const el = document.getElementById('sbLanguages');
+  el.innerHTML = state.languages.map(l => `
+    <div class="lang-item ${l===state.currentLanguage?'active':''}" onclick="setLanguage('${esc(l)}')">
+      ${capitalize(l)}
+      <span class="count">${state.words.filter(w=>w.language===l).length}</span>
+    </div>`).join('');
+}
+function setLanguage(l){
+  state.currentLanguage = l; saveState();
+  closeAllOverlays();
+  goTo({type:'dashboard'}, {replace:true});
+}
+function addLanguage(){
+  const name = prompt('New language vault name:');
+  if(!name) return;
+  const key = name.trim().toLowerCase();
+  if(!key) return;
+  if(!state.languages.includes(key)) state.languages.push(key);
+  state.currentLanguage = key;
+  saveState();
+  renderSidebarLanguages();
+  goTo({type:'dashboard'}, {replace:true});
+}
+function toggleTheme(){
+  state.theme = state.theme === 'dark' ? 'light' : 'dark';
+  saveState();
+}
+function resetAll(){
+  localStorage.removeItem(STORAGE_KEY);
+  state = defaultState();
+  currentRoute = {type:'dashboard'};
+  navStack = [];
+  saveState();
+  closeAllOverlays();
+  renderApp();
+}
+
+/* ================= EXPORT / IMPORT ================= */
+function download(filename, content, type){
+  const blob = new Blob([content], {type});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+function exportJSON(){
+  download('lexicon-vault.json', JSON.stringify(state, null, 2), 'application/json');
+}
+function exportCSV(){
+  const rows = [['word','pos','pronunciationEn','pronunciationBn','definition','synonyms','antonyms','examples','paragraph','notes','mastered','review','important','language','dateAdded']];
+  currentWords().forEach(w => rows.push([
+    w.word,w.pos,w.pronunciationEn,w.pronunciationBn,w.definition,(w.synonyms||[]).join('; '),(w.antonyms||[]).join('; '),
+    (w.examples||[]).join(' | '),w.paragraph,w.notes,w.mastered,w.review,w.important,w.language,w.dateAdded
+  ]));
+  const csv = rows.map(r => r.map(c => '"'+String(c===undefined?'':c).replace(/"/g,'""')+'"').join(',')).join('\n');
+  download('lexicon-'+state.currentLanguage+'.csv', csv, 'text/csv');
+}
+function importJSONFile(evt){
+  const file = evt.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(){
+    try{
+      const parsed = JSON.parse(reader.result);
+      if(parsed && Array.isArray(parsed.words)){
+        state = Object.assign(defaultState(), parsed);
+        currentRoute = {type:'dashboard'};
+        navStack = [];
+        saveState();
+        renderApp();
+        alert('Vault imported successfully.');
+      } else {
+        alert('This file does not look like a Lexicon vault export.');
+      }
+    }catch(e){ alert('Could not parse this file as JSON.'); }
+  };
+  reader.readAsText(file);
+  evt.target.value = '';
+}
+
+/* ================= MODALS ================= */
+let editingId = null;
+function openModal(id){ document.getElementById(id).classList.add('show'); }
+function closeModal(id){ document.getElementById(id).classList.remove('show'); document.getElementById(id==='modalManual'?'manualErr':'jsonErr') && (document.getElementById(id==='modalManual'?'manualErr':'jsonErr').textContent=''); }
+
+function openManualModal(prefillId){
+  editingId = prefillId || null;
+  document.getElementById('manualTitle').textContent = prefillId ? 'Edit word' : 'Add a word';
+  const langSel = document.getElementById('f_lang');
+  langSel.innerHTML = state.languages.map(l => `<option value="${esc(l)}">${capitalize(l)}</option>`).join('');
+  langSel.value = state.currentLanguage;
+  if(prefillId){
+    const w = state.words.find(x=>x.id===prefillId);
+    document.getElementById('f_word').value = w.word;
+    document.getElementById('f_pos').value = w.pos;
+    document.getElementById('f_pron_en').value = w.pronunciationEn || w.pronunciation || '';
+    document.getElementById('f_pron_bn').value = w.pronunciationBn || '';
+    document.getElementById('f_def').value = w.definition||'';
+    document.getElementById('f_syn').value = (w.synonyms||[]).join(', ');
+    document.getElementById('f_ant').value = (w.antonyms||[]).join(', ');
+    document.getElementById('f_examples').value = (w.examples||[]).join('\n');
+    document.getElementById('f_para').value = w.paragraph||'';
+    document.getElementById('f_form_noun').value = w.forms?.noun||'';
+    document.getElementById('f_form_verb').value = w.forms?.verb||'';
+    document.getElementById('f_form_adj').value = w.forms?.adjective||'';
+    document.getElementById('f_form_adv').value = w.forms?.adverb||'';
+    document.getElementById('f_notes').value = w.notes||'';
+    langSel.value = w.language;
+  } else {
+    ['f_word','f_pron_en','f_pron_bn','f_def','f_syn','f_ant','f_examples','f_para','f_form_noun','f_form_verb','f_form_adj','f_form_adv','f_notes'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('f_pos').value = 'noun';
+  }
+  openModal('modalManual');
+  updateCounters();
+}
+
+function countSentences(text){
+  return (text||'').split(/[.!?]+/).map(s=>s.trim()).filter(Boolean).length;
+}
+function updateCounters(){
+  const exCount = document.getElementById('f_examples').value.split('\n').map(s=>s.trim()).filter(Boolean).length;
+  const exEl = document.getElementById('examplesCounter');
+  exEl.textContent = exCount + ' of 3 sentences';
+  exEl.classList.toggle('ok', exCount >= 3);
+
+  const paraCount = countSentences(document.getElementById('f_para').value);
+  const paraEl = document.getElementById('paraCounter');
+  paraEl.textContent = paraCount + ' of 5–7 sentences';
+  paraEl.classList.toggle('ok', paraCount >= 5);
+}
+
+function submitManual(){
+  const word = document.getElementById('f_word').value.trim();
+  const errEl = document.getElementById('manualErr');
+  errEl.textContent = '';
+  if(!word){ errEl.textContent = 'Please enter a word.'; return; }
+  const examples = document.getElementById('f_examples').value.split('\n').map(s=>s.trim()).filter(Boolean);
+  if(examples.length < 3){ errEl.textContent = 'Add at least 3 example sentences (one per line).'; return; }
+  const paragraph = document.getElementById('f_para').value.trim();
+  if(countSentences(paragraph) < 5){ errEl.textContent = 'The contextual paragraph needs at least 5 sentences (aim for 5–7).'; return; }
+  const data = {
+    word,
+    pos: document.getElementById('f_pos').value,
+    pronunciationEn: document.getElementById('f_pron_en').value.trim(),
+    pronunciationBn: document.getElementById('f_pron_bn').value.trim(),
+    definition: document.getElementById('f_def').value.trim(),
+    synonyms: document.getElementById('f_syn').value.split(',').map(s=>s.trim()).filter(Boolean),
+    antonyms: document.getElementById('f_ant').value.split(',').map(s=>s.trim()).filter(Boolean),
+    examples,
+    paragraph,
+    forms:{
+      noun: document.getElementById('f_form_noun').value.trim(),
+      verb: document.getElementById('f_form_verb').value.trim(),
+      adjective: document.getElementById('f_form_adj').value.trim(),
+      adverb: document.getElementById('f_form_adv').value.trim(),
+    },
+    notes: document.getElementById('f_notes').value.trim(),
+    language: document.getElementById('f_lang').value,
+  };
+  if(editingId){
+    const w = state.words.find(x=>x.id===editingId);
+    Object.assign(w, data);
+  } else {
+    state.words.unshift(Object.assign({
+      id:uid(), mastered:false, review:false, important:false, dateAdded:new Date().toISOString()
+    }, data));
+  }
+  saveState();
+  closeModal('modalManual');
+  goTo(editingId ? {type:'word', id:editingId} : {type:'dashboard'}, {replace:true});
+}
+
+function submitJSON(){
+  const raw = document.getElementById('jsonInput').value.trim();
+  const errEl = document.getElementById('jsonErr');
+  errEl.textContent = '';
+  if(!raw){ errEl.textContent = 'Paste a JSON array first.'; return; }
+  let arr;
+  try{ arr = JSON.parse(raw); }catch(e){ errEl.textContent = 'Invalid JSON: '+e.message; return; }
+  if(!Array.isArray(arr)){ errEl.textContent = 'Expected a JSON array of word objects.'; return; }
+  let count = 0;
+  arr.forEach(item => {
+    if(!item || !item.word) return;
+    state.words.unshift({
+      id:uid(),
+      word:item.word, pos:item.pos||'noun',
+      pronunciationEn:item.pronunciationEn||item.pronunciation||'',
+      pronunciationBn:item.pronunciationBn||'',
+      definition:item.definition||'', synonyms:item.synonyms||[], antonyms:item.antonyms||[],
+      examples:item.examples||[], paragraph:item.paragraph||'',
+      forms:item.forms||{noun:'',verb:'',adjective:'',adverb:''},
+      notes:item.notes||'',
+      language:item.language||state.currentLanguage,
+      mastered:!!item.mastered, review:!!item.review, important:!!item.important,
+      dateAdded:new Date().toISOString(),
+    });
+    count++;
+  });
+  saveState();
+  document.getElementById('jsonInput').value='';
+  closeModal('modalJSON');
+  goTo({type:'dashboard'}, {replace:true});
+  alert(count + ' word(s) imported.');
+}
+
+function clearAddFields(){
+  document.getElementById('addModeSelect') && (document.getElementById('addModeSelect').value = 'manual');
+}
+
+function deleteWord(id){
+  if(!confirm('Delete this word from your vault?')) return;
+  state.words = state.words.filter(w=>w.id!==id);
+  saveState();
+  goTo({type:'dashboard'}, {replace:true});
+}
+function toggleFlag(id, key){
+  const w = state.words.find(x=>x.id===id);
+  w[key] = !w[key];
+  saveState();
+  renderApp();
+}
+
+/* ================= ROUTING =================
+   Deliberately does NOT touch window.location, hash, or history.
+   Some browsers (especially standalone "Add to Home Screen" webviews on
+   phones, or files opened via a chat app's temporary file viewer) fail
+   to re-resolve a local file:// URL once its address changes — that's
+   what caused the "file cannot be accessed" error on refresh. Keeping
+   the current screen in memory (and mirrored into localStorage) means
+   the address bar never changes, so there is nothing for a refresh to
+   fail to re-open: refreshing simply re-reads the same state and
+   redraws whichever screen you were last on. */
+let currentRoute = (state.lastRoute && state.lastRoute.type) ? state.lastRoute : {type:'dashboard'};
+let navStack = [];
+
+function goTo(route, opts){
+  opts = opts || {};
+  if(!opts.replace) navStack.push(currentRoute);
+  currentRoute = route;
+  state.lastRoute = route;
+  saveState();
+  renderApp();
+}
+function goBack(){
+  currentRoute = navStack.pop() || {type:'dashboard'};
+  state.lastRoute = currentRoute;
+  saveState();
+  renderApp();
+}
+
+window.addEventListener('DOMContentLoaded', renderApp);
+
+function renderApp(){
+  closeAllOverlays();
+  const app = document.getElementById('app');
+  if(currentRoute.type === 'word'){
+    renderWordDetail(app, currentRoute.id);
+  } else if(currentRoute.type === 'list'){
+    renderListPage(app, currentRoute.filter);
+  } else {
+    renderDashboard(app);
+  }
+  window.scrollTo(0,0);
+}
+
+/* ================= DASHBOARD ================= */
+let searchTerm = '';
+let goalOpen = false;
+
+function renderDashboard(app){
+  const words = currentWords();
+  const total = words.length;
+  const mastered = words.filter(w=>w.mastered).length;
+  const review = words.filter(w=>w.review).length;
+  const important = words.filter(w=>w.important).length;
+  const todayCount = wordsToday().length;
+  const pct = Math.min(100, Math.round((todayCount/Math.max(1,state.goalTarget))*100));
+  const recent = [...words].sort((a,b)=> new Date(b.dateAdded)-new Date(a.dateAdded)).slice(0,10);
+
+  app.innerHTML = `
+    <div class="greeting">
+      <h1>${greeting()} 👋</h1>
+      <p>Here's a quick overview of your ${capitalize(state.currentLanguage)} vault, your words, and your learning.</p>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-card" style="--c:var(--blue)" onclick="goTo({type:'list',filter:'all'})">
+        <div class="lbl">Total words</div><div class="num">${total}</div><div class="sub">Across all categories</div>
+      </div>
+      <div class="stat-card" style="--c:var(--green)" onclick="goTo({type:'list',filter:'mastered'})">
+        <div class="lbl">Mastered</div><div class="num">${mastered}</div><div class="sub">Quick access</div>
+      </div>
+      <div class="stat-card" style="--c:var(--gold)" onclick="goTo({type:'list',filter:'review'})">
+        <div class="lbl">Review words</div><div class="num">${review}</div><div class="sub">Organized</div>
+      </div>
+      <div class="stat-card" style="--c:var(--coral)" onclick="goTo({type:'list',filter:'important'})">
+        <div class="lbl">Important</div><div class="num">${important}</div><div class="sub">Bookmarked</div>
+      </div>
+    </div>
+
+    <div class="goal-card">
+      <div class="goal-top" onclick="goalOpen=!goalOpen; renderDashboard(document.getElementById('app'));">
+        <div class="title">Today's goal</div>
+        <div class="goal-count">${todayCount}<span class="sep">/</span><span class="target">${state.goalTarget}</span></div>
+      </div>
+      <div class="goal-bar-track"><div class="goal-bar-fill" style="width:${pct}%"></div></div>
+      <div class="goal-detail ${goalOpen?'open':''}">
+        <div class="goal-detail-inner">
+          <label class="flabel">Learning track</label>
+          <select id="goalTrackSel" onchange="setLanguage(this.value)" style="margin-bottom:12px;">
+            ${state.languages.map(l=>`<option value="${esc(l)}" ${l===state.currentLanguage?'selected':''}>${capitalize(l)}</option>`).join('')}
+          </select>
+          <label class="flabel">Daily target</label>
+          <input type="number" min="1" value="${state.goalTarget}" onchange="state.goalTarget=parseInt(this.value)||1; saveState(); renderApp();">
+        </div>
+      </div>
+    </div>
+
+    <div class="search-wrap">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="text" placeholder="Search a word you have entered..." value="${esc(searchTerm)}" oninput="searchTerm=this.value; renderApp();">
+    </div>
+
+    <div class="add-card">
+      <div class="title">Add new word</div>
+      <select id="addModeSelect">
+        <option value="manual">Add manually</option>
+        <option value="json">Add from JSON</option>
+      </select>
+      <div class="btn-row">
+        <button class="btn btn-gold" onclick="handleAddAction()">Add word</button>
+        <button class="btn btn-outline" onclick="clearAddFields()">Clear</button>
+      </div>
+    </div>
+
+    ${recent.length ? `
+    <div class="section-title">Recent words</div>
+    <div class="recent-scroll">
+      ${recent.map(w=>`<div class="recent-pill" onclick="goTo({type:'word',id:'${w.id}'})">${esc(w.word)}</div>`).join('')}
+    </div>` : ''}
+
+    <div class="section-title">Word directory</div>
+    <div id="dashDirectory"></div>
+  `;
+
+  const modeSel = document.getElementById('addModeSelect');
+  modeSel.addEventListener('change', () => {
+    const btn = document.querySelector('.add-card .btn-gold');
+    btn.textContent = modeSel.value==='manual' ? 'Add word' : 'Import JSON';
+  });
+
+  renderDirectory(document.getElementById('dashDirectory'), searchTerm ? filterBySearch(words, searchTerm) : words, true);
+}
+
+function handleAddAction(){
+  const mode = document.getElementById('addModeSelect').value;
+  if(mode==='manual') openManualModal(null);
+  else openModal('modalJSON');
+}
+
+function filterBySearch(words, term){
+  const t = term.toLowerCase();
+  return words.filter(w => w.word.toLowerCase().includes(t) || (w.definition||'').toLowerCase().includes(t));
+}
+
+/* ================= DIRECTORY (grouped A-Z) ================= */
+function renderDirectory(container, words, compact){
+  if(words.length===0){
+    container.innerHTML = `<div class="empty-state">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      <div class="t">No words yet</div>
+      <div>Add your first word to start building this vault.</div>
+    </div>`;
+    return;
+  }
+  const groups = {};
+  words.forEach(w => {
+    const l = w.word.charAt(0).toUpperCase();
+    (groups[l] = groups[l] || []).push(w);
+  });
+  const letters = Object.keys(groups).sort();
+  container.innerHTML = letters.map(l => `
+    <div class="letter-row"><div class="letter-badge">${l}</div><div class="letter-line"></div></div>
+    ${groups[l].sort((a,b)=>a.word.localeCompare(b.word)).map(w=>wordCardHTML(w)).join('')}
+  `).join('');
+}
+
+function wordCardHTML(w){
+  return `
+  <div class="word-card" onclick="goTo({type:'word',id:'${w.id}'})">
+    <div class="w-main">
+      <div class="w-title">${esc(w.word)}</div>
+      ${w.definition?`<div class="w-def">${esc(w.definition)}</div>`:''}
+    </div>
+    <div class="pos-chip">${esc(w.pos||'—')}</div>
+    <div class="flag-dots">
+      ${w.mastered?'<div class="flag-dot" style="background:var(--green)" title="Mastered"></div>':''}
+      ${w.review?'<div class="flag-dot" style="background:var(--gold)" title="Needs review"></div>':''}
+      ${w.important?'<div class="flag-dot" style="background:var(--coral)" title="Important"></div>':''}
+    </div>
+  </div>`;
+}
+
+/* ================= LIST PAGE (with tabs) ================= */
+function renderListPage(app, initialFilter){
+  const tabs = [
+    {key:'all', label:'Log'},
+    {key:'mastered', label:'Mastered'},
+    {key:'review', label:'Needs review'},
+    {key:'important', label:'Important'},
+  ];
+  app.innerHTML = `
+    <div class="back-row">
+      <button class="icon-btn" onclick="goBack()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m15 18-6-6 6-6"/></svg></button>
+      <div style="font-family:'Fraunces',serif; font-size:20px; font-weight:600;">${capitalize(state.currentLanguage)} vault</div>
+    </div>
+    <div class="search-wrap">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="text" placeholder="Search a word you have entered..." value="${esc(searchTerm)}" oninput="searchTerm=this.value; renderListPage(document.getElementById('app'), '${initialFilter}');">
+    </div>
+    <div class="tabbar" id="tabbar">
+      ${tabs.map(t=>`<div class="tab ${t.key===initialFilter?'active':''}" data-k="${t.key}">${t.label}</div>`).join('')}
+    </div>
+    <div id="listBody"></div>
+  `;
+  document.querySelectorAll('#tabbar .tab').forEach(el => {
+    el.addEventListener('click', () => goTo({type:'list',filter:el.dataset.k}, {replace:true}));
+  });
+  let words = currentWords();
+  if(initialFilter!=='all') words = words.filter(w=>w[initialFilter]);
+  if(searchTerm) words = filterBySearch(words, searchTerm);
+  renderDirectory(document.getElementById('listBody'), words, false);
+}
+
+/* ================= WORD DETAIL ================= */
+function renderWordDetail(app, id){
+  const w = state.words.find(x=>x.id===id);
+  if(!w){
+    app.innerHTML = `<div class="empty-state"><div class="t">Word not found</div>
+      <button class="btn btn-gold" style="margin-top:14px;" onclick="goTo({type:'dashboard'}, {replace:true})">Back to dashboard</button></div>`;
+    return;
+  }
+  const forms = w.forms||{};
+  app.innerHTML = `
+    <div class="back-row">
+      <button class="icon-btn" onclick="goBack()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m15 18-6-6 6-6"/></svg></button>
+      <button class="icon-btn" onclick="openManualModal('${w.id}')" style="margin-left:auto;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
+    </div>
+    <div class="detail-head">
+      <div class="detail-word">${esc(w.word)}</div>
+      <div class="detail-sub">
+        <span>${esc(w.pos||'—')}</span>
+        <span>· ${capitalize(w.language)}</span>
+      </div>
+      ${(w.pronunciationEn || w.pronunciationBn || w.pronunciation) ? `
+      <div class="chip-row" style="margin-top:10px;">
+        ${(w.pronunciationEn||w.pronunciation) ? `<span class="chip">EN &nbsp;${esc(w.pronunciationEn||w.pronunciation)}</span>` : ''}
+        ${w.pronunciationBn ? `<span class="chip">বাং &nbsp;${esc(w.pronunciationBn)}</span>` : ''}
+      </div>` : ''}
+    </div>
+    <div class="status-row">
+      <div class="status-chip ${w.mastered?'on':''}" data-k="mastered" onclick="toggleFlag('${w.id}','mastered')">✓ Mastered</div>
+      <div class="status-chip ${w.review?'on':''}" data-k="review" onclick="toggleFlag('${w.id}','review')">↻ Needs review</div>
+      <div class="status-chip ${w.important?'on':''}" data-k="important" onclick="toggleFlag('${w.id}','important')">★ Important</div>
+    </div>
+
+    ${w.definition?`<div class="detail-block"><h4>Definition</h4><p>${esc(w.definition)}</p></div>`:''}
+
+    ${(w.synonyms&&w.synonyms.length)?`<div class="detail-block"><h4>Synonyms</h4><div class="chip-row">${w.synonyms.map(s=>`<span class="chip">${esc(s)}</span>`).join('')}</div></div>`:''}
+    ${(w.antonyms&&w.antonyms.length)?`<div class="detail-block"><h4>Antonyms</h4><div class="chip-row">${w.antonyms.map(s=>`<span class="chip">${esc(s)}</span>`).join('')}</div></div>`:''}
+
+    ${(forms.noun||forms.verb||forms.adjective||forms.adverb)?`
+    <div class="detail-block"><h4>Grammatical forms</h4>
+      <div class="forms-grid">
+        ${forms.noun?`<div class="form-item"><div class="k">Noun</div><div class="v">${esc(forms.noun)}</div></div>`:''}
+        ${forms.verb?`<div class="form-item"><div class="k">Verb</div><div class="v">${esc(forms.verb)}</div></div>`:''}
+        ${forms.adjective?`<div class="form-item"><div class="k">Adjective</div><div class="v">${esc(forms.adjective)}</div></div>`:''}
+        ${forms.adverb?`<div class="form-item"><div class="k">Adverb</div><div class="v">${esc(forms.adverb)}</div></div>`:''}
+      </div>
+    </div>`:''}
+
+    ${w.notes?`<div class="detail-block"><h4>Grammar & usage notes</h4><p>${esc(w.notes)}</p></div>`:''}
+
+    ${(w.examples&&w.examples.length)?`<div class="detail-block"><h4>Example sentences</h4><ul>${w.examples.map(e=>`<li>${esc(e)}</li>`).join('')}</ul></div>`:''}
+    ${w.paragraph?`<div class="detail-block"><h4>In context</h4><p>${esc(w.paragraph)}</p></div>`:''}
+
+    <div class="detail-block"><h4>Logged</h4><p>${timeAgoOrDate(w.dateAdded)}</p></div>
+
+    <div class="danger-row">
+      <button class="btn btn-outline btn-full" style="border-color:var(--coral); color:var(--coral);" onclick="deleteWord('${w.id}')">Delete word</button>
+    </div>
+  `;
+}
+</script>
+</body>
+</html>
